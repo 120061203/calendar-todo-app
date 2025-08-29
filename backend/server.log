@@ -1,0 +1,492 @@
+🚀 Backend running on http://localhost:4000
+[2025-08-29T08:49:49.915Z] PUT /api/todos/13
+  Response Status: 200
+[2025-08-29T08:49:56.868Z] PUT /api/events/5
+  Response Status: 200
+[2025-08-29T08:50:21.605Z] GET /api/todos
+[2025-08-29T08:50:21.606Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:27.770Z] GET /api/todos
+[2025-08-29T08:50:27.771Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:27.784Z] GET /api/events
+[2025-08-29T08:50:27.785Z] GET /api/todos
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:29.898Z] PUT /api/todos/13
+  Response Status: 200
+[2025-08-29T08:50:30.484Z] PUT /api/todos/13
+  Response Status: 200
+[2025-08-29T08:50:31.046Z] PUT /api/todos/13
+  Response Status: 200
+[2025-08-29T08:50:35.031Z] DELETE /api/events/4
+  Response Status: 200
+[2025-08-29T08:50:39.599Z] PUT /api/events/4
+  Response Status: 404
+[2025-08-29T08:50:40.450Z] PUT /api/events/4
+  Response Status: 404
+[2025-08-29T08:50:40.623Z] PUT /api/events/4
+  Response Status: 404
+[2025-08-29T08:50:40.783Z] PUT /api/events/4
+  Response Status: 404
+[2025-08-29T08:50:40.970Z] PUT /api/events/4
+  Response Status: 404
+[2025-08-29T08:50:43.288Z] PUT /api/todos/12
+  Response Status: 200
+[2025-08-29T08:50:45.237Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:50:45.239Z] GET /api/events
+  Response Status: 200
+[2025-08-29T08:50:45.245Z] GET /api/todos
+[2025-08-29T08:50:45.245Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:45.858Z] GET /api/todos
+[2025-08-29T08:50:45.859Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:45.865Z] GET /api/todos
+[2025-08-29T08:50:45.866Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:45.986Z] GET /api/todos
+[2025-08-29T08:50:45.987Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:45.994Z] GET /api/todos
+[2025-08-29T08:50:45.994Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:46.122Z] GET /api/events
+[2025-08-29T08:50:46.122Z] GET /api/todos
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:46.129Z] GET /api/todos
+[2025-08-29T08:50:46.129Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:46.281Z] GET /api/todos
+[2025-08-29T08:50:46.281Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:46.288Z] GET /api/todos
+[2025-08-29T08:50:46.289Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:46.441Z] GET /api/todos
+[2025-08-29T08:50:46.441Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:46.448Z] GET /api/todos
+[2025-08-29T08:50:46.449Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:46.587Z] GET /api/todos
+[2025-08-29T08:50:46.587Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:46.594Z] GET /api/todos
+[2025-08-29T08:50:46.595Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:50:47.743Z] PUT /api/todos/13
+  Response Status: 200
+[2025-08-29T08:50:49.841Z] POST /api/todos
+  Request Body: {
+  "title": "333",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 14,
+  "title": "333",
+  "due_date": null,
+  "created_at": "2025-08-29T08:50:49.841Z",
+  "completed": false
+}
+[2025-08-29T08:50:55.093Z] POST /api/todos
+  Request Body: {
+  "title": "3",
+  "due_date": "2025-08-02"
+}
+  Response Status: 200
+  Response Data: {
+  "id": 15,
+  "title": "3",
+  "due_date": "2025-08-01T16:00:00.000Z",
+  "created_at": "2025-08-29T08:50:55.093Z",
+  "completed": false
+}
+[2025-08-29T08:50:57.002Z] PUT /api/todos/15
+  Response Status: 200
+[2025-08-29T08:50:58.309Z] PUT /api/todos/15
+  Response Status: 200
+[2025-08-29T08:51:29.272Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:51:44.740Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:51:55.112Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:52:08.127Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:52:12.027Z] PUT /api/todos/9
+  Response Status: 200
+[2025-08-29T08:52:14.621Z] DELETE /api/todos/13
+[2025-08-29T08:52:14.622Z] DELETE /api/todos/9
+[2025-08-29T08:52:14.622Z] DELETE /api/todos/12
+  Response Status: 200
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:52:16.623Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:52:28.499Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:52:45.924Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:52:50.162Z] DELETE /api/todos/15
+  Response Status: 200
+[2025-08-29T08:53:01.122Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:53:17.932Z] GET /api/todos
+[2025-08-29T08:53:17.933Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:53:17.941Z] GET /api/todos
+[2025-08-29T08:53:17.941Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:53:18.303Z] GET /api/todos
+[2025-08-29T08:53:18.304Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:53:18.317Z] GET /api/todos
+[2025-08-29T08:53:18.317Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:53:19.706Z] PUT /api/todos/14
+  Response Status: 200
+[2025-08-29T08:53:21.049Z] PUT /api/todos/14
+  Response Status: 200
+[2025-08-29T08:53:21.996Z] PUT /api/todos/14
+  Response Status: 200
+[2025-08-29T08:53:24.196Z] PUT /api/todos/14
+  Response Status: 200
+[2025-08-29T08:53:25.530Z] DELETE /api/todos/8
+  Response Status: 200
+[2025-08-29T08:53:26.749Z] DELETE /api/todos/7
+  Response Status: 200
+[2025-08-29T08:53:28.577Z] PUT /api/todos/3
+  Response Status: 200
+[2025-08-29T08:53:31.074Z] PUT /api/todos/6
+  Response Status: 200
+[2025-08-29T08:53:33.098Z] PUT /api/todos/11
+  Response Status: 200
+[2025-08-29T08:54:51.442Z] POST /api/events
+  Request Body: {
+  "title": "訂餐",
+  "start_time": "2025-08-29T16:54",
+  "end_time": "2025-08-30T19:54"
+}
+  Response Status: 200
+  Response Data: {
+  "id": 6,
+  "title": "訂餐",
+  "start_time": "2025-08-29T08:54:00.000Z",
+  "end_time": "2025-08-30T11:54:00.000Z",
+  "created_at": "2025-08-29T08:54:51.462Z"
+}
+[2025-08-29T08:54:58.770Z] DELETE /api/todos/11
+[2025-08-29T08:54:58.771Z] DELETE /api/todos/6
+[2025-08-29T08:54:58.772Z] DELETE /api/todos/3
+  Response Status: 200
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:55:03.607Z] DELETE /api/todos/11
+  Response Status: 404
+[2025-08-29T08:55:03.610Z] DELETE /api/todos/6
+  Response Status: 404
+[2025-08-29T08:55:06.697Z] GET /api/events
+[2025-08-29T08:55:06.698Z] GET /api/todos
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:55:06.718Z] GET /api/todos
+[2025-08-29T08:55:06.719Z] GET /api/events
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:55:10.664Z] PUT /api/todos/14
+  Response Status: 200
+[2025-08-29T08:55:11.373Z] PUT /api/todos/10
+  Response Status: 200
+[2025-08-29T08:55:14.240Z] DELETE /api/todos/14
+[2025-08-29T08:55:14.241Z] DELETE /api/todos/10
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T08:55:16.573Z] PUT /api/todos/14
+  Response Status: 404
+[2025-08-29T08:55:18.067Z] PUT /api/todos/14
+  Response Status: 404
+[2025-08-29T08:55:23.111Z] POST /api/todos
+  Request Body: {
+  "title": "111",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 16,
+  "title": "111",
+  "due_date": null,
+  "created_at": "2025-08-29T08:55:23.112Z",
+  "completed": false
+}
+[2025-08-29T08:55:25.827Z] POST /api/todos
+  Request Body: {
+  "title": "222",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 17,
+  "title": "222",
+  "due_date": null,
+  "created_at": "2025-08-29T08:55:25.827Z",
+  "completed": false
+}
+[2025-08-29T08:55:27.495Z] POST /api/todos
+  Request Body: {
+  "title": "3333",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 18,
+  "title": "3333",
+  "due_date": null,
+  "created_at": "2025-08-29T08:55:27.495Z",
+  "completed": false
+}
+[2025-08-29T08:55:30.684Z] POST /api/todos
+  Request Body: {
+  "title": "444",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 19,
+  "title": "444",
+  "due_date": null,
+  "created_at": "2025-08-29T08:55:30.684Z",
+  "completed": false
+}
+[2025-08-29T08:55:31.014Z] GET /api/events
+  Response Status: 200
+[2025-08-29T08:55:32.251Z] PUT /api/todos/14
+  Response Status: 404
+[2025-08-29T08:55:32.941Z] PUT /api/todos/14
+  Response Status: 404
+[2025-08-29T08:55:33.502Z] PUT /api/todos/14
+  Response Status: 404
+[2025-08-29T08:55:33.646Z] PUT /api/todos/14
+  Response Status: 404
+[2025-08-29T08:55:33.820Z] PUT /api/todos/14
+  Response Status: 404
+[2025-08-29T08:55:33.966Z] PUT /api/todos/14
+  Response Status: 404
+[2025-08-29T08:55:34.113Z] PUT /api/todos/14
+  Response Status: 404
+[2025-08-29T08:55:35.167Z] PUT /api/todos/14
+  Response Status: 404
+[2025-08-29T08:55:38.169Z] POST /api/todos
+  Request Body: {
+  "title": "5555",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 20,
+  "title": "5555",
+  "due_date": null,
+  "created_at": "2025-08-29T08:55:38.169Z",
+  "completed": false
+}
+[2025-08-29T08:55:41.633Z] PUT /api/todos/17
+  Response Status: 200
+[2025-08-29T08:55:42.529Z] PUT /api/todos/18
+  Response Status: 200
+[2025-08-29T08:55:43.195Z] PUT /api/todos/19
+  Response Status: 200
+[2025-08-29T08:55:46.637Z] DELETE /api/todos/19
+[2025-08-29T08:55:46.638Z] DELETE /api/todos/18
+  Response Status: 200
+[2025-08-29T08:55:46.642Z] DELETE /api/todos/17
+[2025-08-29T08:55:46.644Z] DELETE /api/todos/14
+  Response Status: 200
+  Response Status: 404
+  Response Status: 200
+[2025-08-29T08:55:46.708Z] GET /api/events
+  Response Status: 200
+[2025-08-29T08:55:58.551Z] GET /api/events
+  Response Status: 200
+[2025-08-29T08:56:16.872Z] GET /api/events
+  Response Status: 200
+[2025-08-29T08:56:35.518Z] GET /api/events
+  Response Status: 200
+[2025-08-29T08:56:49.539Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:57:02.281Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:57:09.357Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:57:14.917Z] PUT /api/todos/20
+  Response Status: 200
+[2025-08-29T08:57:19.879Z] PUT /api/todos/20
+  Response Status: 200
+[2025-08-29T08:57:28.034Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:57:40.651Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T08:57:55.580Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T09:02:02.417Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T09:02:02.430Z] PUT /api/todos/20
+  Response Status: 200
+[2025-08-29T09:02:02.434Z] PUT /api/todos/16
+  Response Status: 200
+[2025-08-29T09:02:02.435Z] PUT /api/todos/5
+  Response Status: 200
+[2025-08-29T09:02:02.436Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T09:02:02.437Z] DELETE /api/todos/20
+  Response Status: 200
+[2025-08-29T09:02:02.438Z] DELETE /api/todos/16
+  Response Status: 200
+[2025-08-29T09:02:02.439Z] DELETE /api/todos/5
+  Response Status: 200
+[2025-08-29T09:02:02.440Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T09:02:15.293Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T09:04:36.805Z] GET /api/todos
+  Response Status: 200
+[2025-08-29T09:06:14.376Z] POST /api/todos
+  Request Body: {
+  "title": "2222",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 22,
+  "title": "2222",
+  "due_date": null,
+  "created_at": "2025-08-29T09:06:14.386Z",
+  "completed": false
+}
+[2025-08-29T09:06:15.862Z] DELETE /api/todos/22
+  Response Status: 200
+[2025-08-29T09:06:17.064Z] PUT /api/todos/4
+  Response Status: 200
+[2025-08-29T09:06:20.664Z] POST /api/todos
+  Request Body: {
+  "title": "222",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 23,
+  "title": "222",
+  "due_date": null,
+  "created_at": "2025-08-29T09:06:20.665Z",
+  "completed": false
+}
+[2025-08-29T09:06:22.669Z] POST /api/todos
+  Request Body: {
+  "title": "3333",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 24,
+  "title": "3333",
+  "due_date": null,
+  "created_at": "2025-08-29T09:06:22.669Z",
+  "completed": false
+}
+[2025-08-29T09:06:24.424Z] POST /api/todos
+  Request Body: {
+  "title": "444",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 25,
+  "title": "444",
+  "due_date": null,
+  "created_at": "2025-08-29T09:06:24.424Z",
+  "completed": false
+}
+[2025-08-29T09:06:26.574Z] POST /api/todos
+  Request Body: {
+  "title": "555",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 26,
+  "title": "555",
+  "due_date": null,
+  "created_at": "2025-08-29T09:06:26.574Z",
+  "completed": false
+}
+[2025-08-29T09:06:29.854Z] POST /api/todos
+  Request Body: {
+  "title": "6666",
+  "due_date": null
+}
+  Response Status: 200
+  Response Data: {
+  "id": 27,
+  "title": "6666",
+  "due_date": null,
+  "created_at": "2025-08-29T09:06:29.854Z",
+  "completed": false
+}
+[2025-08-29T09:06:31.097Z] PUT /api/todos/25
+  Response Status: 200
+[2025-08-29T09:06:32.095Z] PUT /api/todos/27
+  Response Status: 200
+[2025-08-29T09:06:34.380Z] DELETE /api/todos/27
+[2025-08-29T09:06:34.382Z] DELETE /api/todos/25
+  Response Status: 200
+[2025-08-29T09:06:34.384Z] DELETE /api/todos/4
+  Response Status: 200
+  Response Status: 200
+[2025-08-29T09:08:32.455Z] PUT /api/events/6
+  Response Status: 200
+[2025-08-29T09:09:00.809Z] PUT /api/events/6
+  Response Status: 200
+[2025-08-29T09:10:38.876Z] GET /api/events
+  Response Status: 200
+[2025-08-29T09:10:56.313Z] GET /api/events
+  Response Status: 200
+[2025-08-29T09:11:27.796Z] GET /api/events
+  Response Status: 200
+[2025-08-29T09:12:37.944Z] GET /api/events
+  Response Status: 200
+[2025-08-29T09:13:35.667Z] GET /api/events
+  Response Status: 200
+[2025-08-29T09:14:32.637Z] PUT /api/events/6
+  Response Status: 200
+[2025-08-29T09:14:35.156Z] GET /api/events
+  Response Status: 200
+[2025-08-29T09:14:42.106Z] PUT /api/events/6
+  Response Status: 200
+[2025-08-29T09:14:47.571Z] PUT /api/events/6
+  Response Status: 200
+[2025-08-29T09:16:55.976Z] GET /api/events
+  Response Status: 200
+[2025-08-29T09:16:56.001Z] GET /api/events
+  Response Status: 200
+[2025-08-29T09:17:16.188Z] PUT /api/events/6
+  Response Status: 200
