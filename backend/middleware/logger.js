@@ -11,7 +11,12 @@ const logger = (req, res, next) => {
   res.send = function(data) {
     console.log(`  Response Status: ${res.statusCode}`);
     if (res.statusCode === 200 && req.method === 'POST') {
-      console.log('  Response Data:', JSON.stringify(JSON.parse(data), null, 2));
+      try {
+        const parsedData = JSON.parse(data);
+        console.log('  Response Data:', JSON.stringify(parsedData, null, 2));
+      } catch (error) {
+        // 如果不是有效的 JSON，跳過記錄
+      }
     }
     originalSend.call(this, data);
   };

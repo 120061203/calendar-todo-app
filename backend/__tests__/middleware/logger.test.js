@@ -124,9 +124,9 @@ describe('Logger Middleware', () => {
 
     expect(consoleOutput.length).toBeGreaterThan(0);
     expect(consoleOutput[0]).toContain('GET /api/todos');
-    expect(consoleOutput[2]).toContain('Response Status: 200');
+    expect(consoleOutput[1]).toContain('Response Status: 200');
     // GET 請求不應該記錄響應數據
-    expect(consoleOutput[3]).toBeUndefined();
+    expect(consoleOutput[2]).toBeUndefined();
     expect(next).toHaveBeenCalled();
   });
 

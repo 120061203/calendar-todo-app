@@ -1,0 +1,5 @@
+
+# 環境變數文件
+.env
+.env.local
+.env.*.local

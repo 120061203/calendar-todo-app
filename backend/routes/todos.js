@@ -3,17 +3,32 @@ const pool = require("../db");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const result = await pool.query("SELECT * FROM todos ORDER BY id DESC");
-  res.json(result.rows);
+  try {
+    const result = await pool.query("SELECT * FROM todos ORDER BY created_at DESC");
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    res.status(500).json({ error: "Failed to fetch todos" });
+  }
 });
 
 router.post("/", async (req, res) => {
-  const { title, due_date } = req.body;
-  const result = await pool.query(
-    "INSERT INTO todos (title, due_date) VALUES ($1, $2) RETURNING *",
-    [title, due_date]
-  );
-  res.json(result.rows[0]);
+  try {
+    const { title, due_date } = req.body;
+    
+    if (!title) {
+      return res.status(400).json({ error: "Title is required" });
+    }
+    
+    const result = await pool.query(
+      "INSERT INTO todos (title, due_date) VALUES ($1, $2) RETURNING *",
+      [title, due_date]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error creating todo:", error);
+    res.status(500).json({ error: "Failed to create todo" });
+  }
 });
 
 router.put("/:id", async (req, res) => {

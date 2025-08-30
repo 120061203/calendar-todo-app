@@ -153,7 +153,7 @@ describe('Event Routes', () => {
       expect(response.body).toEqual(updatedEvent);
       expect(mockPool.query).toHaveBeenCalledWith(
         'UPDATE calendar_events SET title = $1, start_time = $2, end_time = $3 WHERE id = $4 RETURNING *',
-        [updateData.title, updateData.start_time, updateData.end_time, 1]
+        [updateData.title, updateData.start_time, updateData.end_time, "1"]
       );
     });
 
@@ -184,17 +184,16 @@ describe('Event Routes', () => {
 
   describe('DELETE /api/events/:id', () => {
     test('應該刪除指定的事件', async () => {
-      const deletedEvent = { id: 1, title: '已刪除的事件' };
-      mockPool.query.mockResolvedValue({ rows: [deletedEvent] });
+      mockPool.query.mockResolvedValue({ rows: [{ id: 1, title: '已刪除的事件' }] });
 
       const response = await request(app)
         .delete('/api/events/1')
         .expect(200);
 
-      expect(response.body).toEqual(deletedEvent);
+      expect(response.body).toEqual({ message: "Event deleted successfully" });
       expect(mockPool.query).toHaveBeenCalledWith(
         'DELETE FROM calendar_events WHERE id = $1 RETURNING *',
-        [1]
+        ["1"]
       );
     });
 

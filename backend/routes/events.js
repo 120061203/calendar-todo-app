@@ -3,17 +3,40 @@ const pool = require("../db");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const result = await pool.query("SELECT * FROM calendar_events ORDER BY start_time ASC");
-  res.json(result.rows);
+  try {
+    const result = await pool.query("SELECT * FROM calendar_events ORDER BY start_time ASC");
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).json({ error: "Failed to fetch events" });
+  }
 });
 
 router.post("/", async (req, res) => {
-  const { title, start_time, end_time } = req.body;
-  const result = await pool.query(
-    "INSERT INTO calendar_events (title, start_time, end_time) VALUES ($1, $2, $3) RETURNING *",
-    [title, start_time, end_time]
-  );
-  res.json(result.rows[0]);
+  try {
+    const { title, start_time, end_time } = req.body;
+    
+    if (!title) {
+      return res.status(400).json({ error: "Title is required" });
+    }
+    
+    if (!start_time) {
+      return res.status(400).json({ error: "Start time is required" });
+    }
+    
+    if (!end_time) {
+      return res.status(400).json({ error: "End time is required" });
+    }
+    
+    const result = await pool.query(
+      "INSERT INTO calendar_events (title, start_time, end_time) VALUES ($1, $2, $3) RETURNING *",
+      [title, start_time, end_time]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error creating event:", error);
+    res.status(500).json({ error: "Failed to create event" });
+  }
 });
 
 router.put("/:id", async (req, res) => {

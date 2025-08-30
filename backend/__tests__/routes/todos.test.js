@@ -108,7 +108,7 @@ describe('Todo Routes', () => {
       expect(response.body).toEqual(updatedTodo);
       expect(mockPool.query).toHaveBeenCalledWith(
         'UPDATE todos SET completed = $1 WHERE id = $2 RETURNING *',
-        [true, 1]
+        [true, "1"]
       );
     });
 
@@ -126,7 +126,7 @@ describe('Todo Routes', () => {
       expect(response.body).toEqual(updatedTodo);
       expect(mockPool.query).toHaveBeenCalledWith(
         'UPDATE todos SET title = $1, due_date = $2 WHERE id = $3 RETURNING *',
-        [updateData.title, updateData.due_date, 1]
+        [updateData.title, updateData.due_date, "1"]
       );
     });
 
@@ -157,17 +157,16 @@ describe('Todo Routes', () => {
 
   describe('DELETE /api/todos/:id', () => {
     test('應該刪除指定的待辦事項', async () => {
-      const deletedTodo = { id: 1, title: '已刪除的待辦事項' };
-      mockPool.query.mockResolvedValue({ rows: [deletedTodo] });
+      mockPool.query.mockResolvedValue({ rows: [{ id: 1, title: '已刪除的待辦事項' }] });
 
       const response = await request(app)
         .delete('/api/todos/1')
         .expect(200);
 
-      expect(response.body).toEqual(deletedTodo);
+      expect(response.body).toEqual({ message: "Todo deleted successfully" });
       expect(mockPool.query).toHaveBeenCalledWith(
         'DELETE FROM todos WHERE id = $1 RETURNING *',
-        [1]
+        ["1"]
       );
     });
 
