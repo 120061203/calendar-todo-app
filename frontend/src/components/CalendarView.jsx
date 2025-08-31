@@ -58,12 +58,27 @@ export default function CalendarView() {
     if (!newEvent.title || !newEvent.start_time || !newEvent.end_time) return;
     
     try {
-      const res = await addEvent(newEvent);
+      // 確保時間以本地時間格式發送，不進行時區轉換
+      const eventData = {
+        title: newEvent.title,
+        start_time: newEvent.start_time,
+        end_time: newEvent.end_time
+      };
+      
+      console.log("發送事件數據:", eventData);
+      
+      const res = await addEvent(eventData);
+      
+      // 從後端返回的數據保持本地時間格式
       const formattedEvent = {
+        id: res.data.id,
         title: res.data.title,
         start: res.data.start_time,
         end: res.data.end_time
       };
+      
+      console.log("格式化後的事件:", formattedEvent);
+      
       setEvents([...events, formattedEvent]);
       setNewEvent({ title: "", start_time: "", end_time: "" });
       setOpenDialog(false);
@@ -106,13 +121,18 @@ export default function CalendarView() {
     if (!editingEvent.title || !editingEvent.start_time || !editingEvent.end_time) return;
     
     try {
-      const res = await updateEvent(editingEvent.id, {
+      // 確保時間以本地時間格式發送，不進行時區轉換
+      const eventData = {
         title: editingEvent.title,
         start_time: editingEvent.start_time,
         end_time: editingEvent.end_time
-      });
+      };
       
-      // 更新本地事件列表
+      console.log("更新事件數據:", eventData);
+      
+      const res = await updateEvent(editingEvent.id, eventData);
+      
+      // 更新本地事件列表，保持本地時間格式
       setEvents(events.map(event => 
         event.id === editingEvent.id 
           ? {
