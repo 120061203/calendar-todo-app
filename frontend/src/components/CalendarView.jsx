@@ -44,35 +44,46 @@ export default function CalendarView() {
   const parseLocalTime = (timeString) => {
     if (!timeString) return null;
     
-    console.log('解析時間字符串:', timeString);
-    
-    // 方法1：直接解析為本地時間
-    const localDate = new Date(timeString);
-    
-    // 方法2：如果方法1失敗，手動解析
-    if (isNaN(localDate.getTime())) {
-      console.log('方法1失敗，嘗試手動解析');
+    // 強制以本地時間解析，避免時區轉換
+    // 方法1：手動解析時間字符串，確保本地時間
+    const match = timeString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+    if (match) {
+      const [, year, month, day, hour, minute, second] = match;
       
-      // 假設格式為 YYYY-MM-DD HH:mm:ss
-      const match = timeString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
-      if (match) {
-        const [, year, month, day, hour, minute, second] = match;
-        const manualDate = new Date(
-          parseInt(year),
-          parseInt(month) - 1, // 月份從0開始
-          parseInt(day),
-          parseInt(hour),
-          parseInt(minute),
-          parseInt(second)
-        );
-        
-        console.log('手動解析結果:', manualDate.toLocaleString('zh-TW'));
-        return manualDate;
-      }
+      // 創建本地時間對象，不進行時區轉換
+      const localDate = new Date(
+        parseInt(year),
+        parseInt(month) - 1, // 月份從0開始
+        parseInt(day),
+        parseInt(hour),
+        parseInt(minute),
+        parseInt(second)
+      );
+      
+      console.log(`解析時間: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
+      return localDate;
     }
     
-    console.log('解析結果:', localDate.toLocaleString('zh-TW'));
-    return localDate;
+    // 方法2：如果格式不匹配，嘗試直接解析
+    const fallbackDate = new Date(timeString);
+    if (!isNaN(fallbackDate.getTime())) {
+      console.log(`備用解析: ${timeString} -> ${fallbackDate.toLocaleString('zh-TW')}`);
+      return fallbackDate;
+    }
+    
+    console.error('時間解析失敗:', timeString);
+    return null;
+  };
+
+  // 測試時間解析函數
+  const testTimeParsing = () => {
+    console.log('=== 測試時間解析 ===');
+    const testTime = '2025-09-03 07:10:00';
+    const parsed = parseLocalTime(testTime);
+    console.log(`測試時間: ${testTime}`);
+    console.log(`解析結果: ${parsed?.toLocaleString('zh-TW')}`);
+    console.log(`小時: ${parsed?.getHours()}`);
+    console.log(`分鐘: ${parsed?.getMinutes()}`);
   };
 
   const loadEvents = async () => {
@@ -81,16 +92,9 @@ export default function CalendarView() {
       
       // 修復：使用時間解析工具函數，確保本地時間處理
       const formattedEvents = res.data.map(e => {
-        console.log('原始事件數據:', e);
-        
         // 使用時間解析工具函數
         const start = parseLocalTime(e.start_time);
         const end = parseLocalTime(e.end_time);
-        
-        console.log('解析後時間:', { 
-          start: start?.toLocaleString('zh-TW'), 
-          end: end?.toLocaleString('zh-TW') 
-        });
         
         return {
           id: e.id,
@@ -100,7 +104,6 @@ export default function CalendarView() {
         };
       });
       
-      console.log('格式化後的事件列表:', formattedEvents);
       setEvents(formattedEvents);
     } catch (error) {
       console.error("Failed to load events:", error);
