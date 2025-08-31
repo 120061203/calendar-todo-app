@@ -1,4 +1,4 @@
-const { pool } = require('../config/database');
+const pool = require('../config/db');
 const logger = require('../config/logger');
 const Event = require('../models/Event');
 

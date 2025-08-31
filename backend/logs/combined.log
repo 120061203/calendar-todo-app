@@ -260,3 +260,166 @@ Error: Failed to fetch todos
 2025-08-31 20:59:37 [INFO]: Fetching all events
 2025-08-31 20:59:37 [INFO]: Successfully fetched 2 events
 2025-08-31 20:59:37 [INFO]: ::1 - - [31/Aug/2025:12:59:37 +0000] "GET /api/events HTTP/1.1" 200 381 "-" "curl/8.7.1"
+2025-08-31 21:26:42 [INFO]: 🚀 Backend running on http://localhost:4000
+2025-08-31 21:26:42 [INFO]: 🌍 Environment: production
+2025-08-31 21:26:42 [INFO]: 📊 Database: db.ijtxwcxrfsbdqcokdyni.supabase.co:5432/postgres
+2025-08-31 21:46:33 [INFO]: Received SIGTERM. Starting graceful shutdown...
+2025-08-31 21:48:40 [INFO]: 127.0.0.1 - - [31/Aug/2025:13:48:40 +0000] "GET /health HTTP/1.1" 200 182 "-" "curl/8.7.1"
+2025-08-31 21:48:45 [INFO]: Fetching all todos
+2025-08-31 21:48:46 [INFO]: Successfully fetched 2 todos
+2025-08-31 21:48:46 [INFO]: 127.0.0.1 - - [31/Aug/2025:13:48:46 +0000] "GET /api/todos HTTP/1.1" 200 349 "-" "curl/8.7.1"
+2025-08-31 21:48:50 [INFO]: Fetching all events
+2025-08-31 21:48:51 [INFO]: Successfully fetched 2 events
+2025-08-31 21:48:51 [INFO]: 127.0.0.1 - - [31/Aug/2025:13:48:51 +0000] "GET /api/events HTTP/1.1" 200 381 "-" "curl/8.7.1"
+2025-08-31 23:32:47 [INFO]: Fetching all todos
+2025-08-31 23:32:47 [ERROR]: TodoRepository.findAll error: Cannot read properties of undefined (reading 'query')
+TypeError: Cannot read properties of undefined (reading 'query')
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:13:33)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:32:47 [ERROR]: TodoService.getAllTodos error: Failed to fetch todos
+Error: Failed to fetch todos
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:17:13)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:32:47 [ERROR]: TodoController.getAllTodos error: Failed to fetch todos
+Error: Failed to fetch todos
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:17:13)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:33:21 [INFO]: Fetching all todos
+2025-08-31 23:33:21 [ERROR]: TodoRepository.findAll error: Cannot read properties of undefined (reading 'query')
+TypeError: Cannot read properties of undefined (reading 'query')
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:13:33)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:33:21 [ERROR]: TodoService.getAllTodos error: Failed to fetch todos
+Error: Failed to fetch todos
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:17:13)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:33:21 [ERROR]: TodoController.getAllTodos error: Failed to fetch todos
+Error: Failed to fetch todos
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:17:13)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:33:45 [INFO]: Fetching all todos
+2025-08-31 23:33:45 [ERROR]: TodoRepository.findAll error: Cannot read properties of undefined (reading 'query')
+TypeError: Cannot read properties of undefined (reading 'query')
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:13:33)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:33:45 [ERROR]: TodoService.getAllTodos error: Failed to fetch todos
+Error: Failed to fetch todos
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:27:13)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:33:45 [ERROR]: TodoController.getAllTodos error: Failed to fetch todos
+Error: Failed to fetch todos
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:27:13)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:34:35 [INFO]: Fetching all todos
+2025-08-31 23:34:35 [ERROR]: TodoRepository.findAll error: Cannot read properties of undefined (reading 'query')
+TypeError: Cannot read properties of undefined (reading 'query')
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:13:33)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:34:35 [ERROR]: TodoService.getAllTodos error: Failed to fetch todos
+Error: Failed to fetch todos
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:45:13)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:34:35 [ERROR]: TodoController.getAllTodos error: Failed to fetch todos
+Error: Failed to fetch todos
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:45:13)
+    at TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:42)
+    at TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:39)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/index.js:280:10)
+2025-08-31 23:35:27 [INFO]: Fetching all todos
+2025-08-31 23:35:29 [INFO]: Successfully fetched 2 todos
+2025-08-31 23:35:34 [INFO]: Fetching all events
+2025-08-31 23:35:34 [INFO]: Successfully fetched 2 events

@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const API_URL = "http://localhost:4000/api";
+import { API_URL } from "../env.config.js";
 
 export const getTodos = () => axios.get(`${API_URL}/todos`);
 export const addTodo = (todo) => axios.post(`${API_URL}/todos`, todo);

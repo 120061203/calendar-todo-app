@@ -1,4 +1,4 @@
-const { pool } = require('../config/database');
+const pool = require('../config/db');
 const logger = require('../config/logger');
 const Todo = require('../models/Todo');
 
@@ -11,8 +11,36 @@ class TodoRepository {
         ORDER BY created_at DESC
       `;
       const result = await pool.query(query);
-      return result.rows.map(row => Todo.create(row));
+      
+      console.log('🔍 資料庫查詢結果:', result.rows.length, '行');
+      
+      // 修復：確保資料格式正確
+      const todos = result.rows.map((row, index) => {
+        try {
+          console.log(`🔍 處理第 ${index + 1} 行:`, row);
+          
+          // 處理日期格式
+          const todoData = {
+            ...row,
+            created_at: row.created_at ? new Date(row.created_at) : new Date(),
+            updated_at: row.updated_at ? new Date(row.updated_at) : new Date()
+          };
+          
+          console.log(`🔍 處理後的數據:`, todoData);
+          
+          const todo = Todo.create(todoData);
+          console.log(`✅ 第 ${index + 1} 行 Todo 創建成功`);
+          return todo;
+        } catch (rowError) {
+          console.error(`❌ 處理第 ${index + 1} 行時出錯:`, rowError);
+          throw rowError;
+        }
+      });
+      
+      console.log(`✅ 成功創建 ${todos.length} 個 Todo 對象`);
+      return todos;
     } catch (error) {
+      console.error('❌ TodoRepository.findAll 詳細錯誤:', error);
       logger.error('TodoRepository.findAll error:', error);
       throw new Error('Failed to fetch todos');
     }
