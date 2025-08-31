@@ -40,19 +40,85 @@ export default function CalendarView() {
     loadEvents();
   }, []);
 
-  // 移除複雜的時間解析函數，直接使用原始數據
+  // 修復：時間解析工具函數，確保本地時間處理
+  const parseLocalTime = (timeString) => {
+    if (!timeString) return null;
+    
+    console.log('解析時間字符串:', timeString);
+    
+    // 方法1：直接解析為本地時間
+    const localDate = new Date(timeString);
+    
+    // 方法2：如果方法1失敗，手動解析
+    if (isNaN(localDate.getTime())) {
+      console.log('方法1失敗，嘗試手動解析');
+      
+      // 假設格式為 YYYY-MM-DD HH:mm:ss
+      const match = timeString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+      if (match) {
+        const [, year, month, day, hour, minute, second] = match;
+        const manualDate = new Date(
+          parseInt(year),
+          parseInt(month) - 1, // 月份從0開始
+          parseInt(day),
+          parseInt(hour),
+          parseInt(minute),
+          parseInt(second)
+        );
+        
+        console.log('手動解析結果:', manualDate.toLocaleString('zh-TW'));
+        return manualDate;
+      }
+    }
+    
+    console.log('解析結果:', localDate.toLocaleString('zh-TW'));
+    return localDate;
+  };
+
+  // 修復：強制本地時間解析，避免時區轉換
+  const forceLocalTime = (timeString) => {
+    if (!timeString) return null;
+    
+    // 強制以本地時間解析，避免時區轉換
+    const match = timeString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+    if (match) {
+      const [, year, month, day, hour, minute, second] = match;
+      
+      // 創建本地時間對象，強制指定為本地時間
+      const localDate = new Date();
+      localDate.setFullYear(parseInt(year));
+      localDate.setMonth(parseInt(month) - 1); // 月份從0開始
+      localDate.setDate(parseInt(day));
+      localDate.setHours(parseInt(hour));
+      localDate.setMinutes(parseInt(minute));
+      localDate.setSeconds(parseInt(second));
+      localDate.setMilliseconds(0);
+      
+      console.log(`強制本地時間: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
+      return localDate;
+    }
+    
+    console.error('時間格式不匹配:', timeString);
+    return null;
+  };
 
   const loadEvents = async () => {
     try {
       const res = await getEvents();
       
-      // 最簡單的解決方案：直接使用資料庫的原始時間，不做任何轉換
-      const formattedEvents = res.data.map(e => ({
-        id: e.id,
-        title: e.title,
-        start: e.start_time,  // 直接使用原始字符串
-        end: e.end_time       // 直接使用原始字符串
-      }));
+      // 修復：使用強制本地時間函數，避免時區轉換
+      const formattedEvents = res.data.map(e => {
+        // 使用強制本地時間函數
+        const start = forceLocalTime(e.start_time);
+        const end = forceLocalTime(e.end_time);
+        
+        return {
+          id: e.id,
+          title: e.title,
+          start: start,
+          end: end
+        };
+      });
       
       setEvents(formattedEvents);
     } catch (error) {
@@ -102,37 +168,16 @@ export default function CalendarView() {
   const handleEventClick = (clickInfo) => {
     console.log("Event clicked:", clickInfo.event);
     
-    // 修復：直接使用時間字符串，不進行時區轉換
-    // 如果 clickInfo.event.start 是字符串，直接使用
-    // 如果是 Date 對象，轉換為 YYYY-MM-DDTHH:mm 格式
+    // 格式化日期為 YYYY-MM-DDTHH:mm 格式
     const formatDateForInput = (date) => {
       if (!date) return "";
-      
-      // 如果已經是字符串格式，直接返回
-      if (typeof date === 'string') {
-        // 檢查是否已經是 YYYY-MM-DDTHH:mm 格式
-        if (date.includes('T')) {
-          return date;
-        }
-        // 如果是 YYYY-MM-DD HH:mm:ss 格式，轉換為 YYYY-MM-DDTHH:mm
-        const match = date.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
-        if (match) {
-          const [, year, month, day, hour, minute] = match;
-          return `${year}-${month}-${day}T${hour}:${minute}`;
-        }
-      }
-      
-      // 如果是 Date 對象，轉換為本地時間格式
-      if (date instanceof Date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
-      }
-      
-      return date;
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
     };
     
     setEditingEvent({
@@ -256,6 +301,12 @@ export default function CalendarView() {
             eventClick={handleEventClick}
             editable={true}
             selectable={true}
+            timeZone="local"
+            eventTimeFormat={{
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false
+            }}
           />
         </Box>
 
