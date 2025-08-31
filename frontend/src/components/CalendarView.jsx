@@ -40,69 +40,19 @@ export default function CalendarView() {
     loadEvents();
   }, []);
 
-  // 修復：時間解析工具函數，確保本地時間處理
-  const parseLocalTime = (timeString) => {
-    if (!timeString) return null;
-    
-    // 強制以本地時間解析，避免時區轉換
-    // 方法1：手動解析時間字符串，確保本地時間
-    const match = timeString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
-    if (match) {
-      const [, year, month, day, hour, minute, second] = match;
-      
-      // 創建本地時間對象，不進行時區轉換
-      const localDate = new Date(
-        parseInt(year),
-        parseInt(month) - 1, // 月份從0開始
-        parseInt(day),
-        parseInt(hour),
-        parseInt(minute),
-        parseInt(second)
-      );
-      
-      console.log(`解析時間: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
-      return localDate;
-    }
-    
-    // 方法2：如果格式不匹配，嘗試直接解析
-    const fallbackDate = new Date(timeString);
-    if (!isNaN(fallbackDate.getTime())) {
-      console.log(`備用解析: ${timeString} -> ${fallbackDate.toLocaleString('zh-TW')}`);
-      return fallbackDate;
-    }
-    
-    console.error('時間解析失敗:', timeString);
-    return null;
-  };
-
-  // 測試時間解析函數
-  const testTimeParsing = () => {
-    console.log('=== 測試時間解析 ===');
-    const testTime = '2025-09-03 07:10:00';
-    const parsed = parseLocalTime(testTime);
-    console.log(`測試時間: ${testTime}`);
-    console.log(`解析結果: ${parsed?.toLocaleString('zh-TW')}`);
-    console.log(`小時: ${parsed?.getHours()}`);
-    console.log(`分鐘: ${parsed?.getMinutes()}`);
-  };
+  // 移除複雜的時間解析函數，直接使用原始數據
 
   const loadEvents = async () => {
     try {
       const res = await getEvents();
       
-      // 修復：使用時間解析工具函數，確保本地時間處理
-      const formattedEvents = res.data.map(e => {
-        // 使用時間解析工具函數
-        const start = parseLocalTime(e.start_time);
-        const end = parseLocalTime(e.end_time);
-        
-        return {
-          id: e.id,
-          title: e.title,
-          start: start,
-          end: end
-        };
-      });
+      // 最簡單的解決方案：直接使用資料庫的原始時間，不做任何轉換
+      const formattedEvents = res.data.map(e => ({
+        id: e.id,
+        title: e.title,
+        start: e.start_time,  // 直接使用原始字符串
+        end: e.end_time       // 直接使用原始字符串
+      }));
       
       setEvents(formattedEvents);
     } catch (error) {
@@ -152,16 +102,37 @@ export default function CalendarView() {
   const handleEventClick = (clickInfo) => {
     console.log("Event clicked:", clickInfo.event);
     
-    // 格式化日期為 YYYY-MM-DDTHH:mm 格式
+    // 修復：直接使用時間字符串，不進行時區轉換
+    // 如果 clickInfo.event.start 是字符串，直接使用
+    // 如果是 Date 對象，轉換為 YYYY-MM-DDTHH:mm 格式
     const formatDateForInput = (date) => {
       if (!date) return "";
-      const d = new Date(date);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      const hours = String(d.getHours()).padStart(2, '0');
-      const minutes = String(d.getMinutes()).padStart(2, '0');
-      return `${year}-${month}-${day}T${hours}:${minutes}`;
+      
+      // 如果已經是字符串格式，直接返回
+      if (typeof date === 'string') {
+        // 檢查是否已經是 YYYY-MM-DDTHH:mm 格式
+        if (date.includes('T')) {
+          return date;
+        }
+        // 如果是 YYYY-MM-DD HH:mm:ss 格式，轉換為 YYYY-MM-DDTHH:mm
+        const match = date.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+        if (match) {
+          const [, year, month, day, hour, minute] = match;
+          return `${year}-${month}-${day}T${hour}:${minute}`;
+        }
+      }
+      
+      // 如果是 Date 對象，轉換為本地時間格式
+      if (date instanceof Date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+      }
+      
+      return date;
     };
     
     setEditingEvent({
