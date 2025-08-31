@@ -40,15 +40,68 @@ export default function CalendarView() {
     loadEvents();
   }, []);
 
+  // 修復：時間解析工具函數，確保本地時間處理
+  const parseLocalTime = (timeString) => {
+    if (!timeString) return null;
+    
+    console.log('解析時間字符串:', timeString);
+    
+    // 方法1：直接解析為本地時間
+    const localDate = new Date(timeString);
+    
+    // 方法2：如果方法1失敗，手動解析
+    if (isNaN(localDate.getTime())) {
+      console.log('方法1失敗，嘗試手動解析');
+      
+      // 假設格式為 YYYY-MM-DD HH:mm:ss
+      const match = timeString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
+      if (match) {
+        const [, year, month, day, hour, minute, second] = match;
+        const manualDate = new Date(
+          parseInt(year),
+          parseInt(month) - 1, // 月份從0開始
+          parseInt(day),
+          parseInt(hour),
+          parseInt(minute),
+          parseInt(second)
+        );
+        
+        console.log('手動解析結果:', manualDate.toLocaleString('zh-TW'));
+        return manualDate;
+      }
+    }
+    
+    console.log('解析結果:', localDate.toLocaleString('zh-TW'));
+    return localDate;
+  };
+
   const loadEvents = async () => {
     try {
       const res = await getEvents();
-      setEvents(res.data.map(e => ({
-        id: e.id, // 確保包含 ID
-        title: e.title,
-        start: e.start_time,
-        end: e.end_time
-      })));
+      
+      // 修復：使用時間解析工具函數，確保本地時間處理
+      const formattedEvents = res.data.map(e => {
+        console.log('原始事件數據:', e);
+        
+        // 使用時間解析工具函數
+        const start = parseLocalTime(e.start_time);
+        const end = parseLocalTime(e.end_time);
+        
+        console.log('解析後時間:', { 
+          start: start?.toLocaleString('zh-TW'), 
+          end: end?.toLocaleString('zh-TW') 
+        });
+        
+        return {
+          id: e.id,
+          title: e.title,
+          start: start,
+          end: end
+        };
+      });
+      
+      console.log('格式化後的事件列表:', formattedEvents);
+      setEvents(formattedEvents);
     } catch (error) {
       console.error("Failed to load events:", error);
     }
@@ -244,6 +297,25 @@ export default function CalendarView() {
             {editingEvent ? "編輯行事曆事件" : "新增行事曆事件"}
           </DialogTitle>
           <DialogContent>
+            {/* 調試信息 - 顯示時間解析過程 */}
+            {process.env.NODE_ENV === 'development' && (
+              <Box sx={{ mb: 2, p: 1, bgcolor: 'grey.100', borderRadius: 1, fontSize: '0.75rem' }}>
+                <Typography variant="caption" color="text.secondary">
+                  🐛 調試信息：
+                </Typography>
+                <Box sx={{ mt: 1 }}>
+                  <div>開始時間: {editingEvent ? editingEvent.start_time : newEvent.start_time}</div>
+                  <div>結束時間: {editingEvent ? editingEvent.end_time : newEvent.end_time}</div>
+                  {editingEvent && (
+                    <>
+                      <div>解析後開始: {parseLocalTime(editingEvent.start_time)?.toLocaleString('zh-TW')}</div>
+                      <div>解析後結束: {parseLocalTime(editingEvent.end_time)?.toLocaleString('zh-TW')}</div>
+                    </>
+                  )}
+                </Box>
+              </Box>
+            )}
+            
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
               <TextField
                 fullWidth
