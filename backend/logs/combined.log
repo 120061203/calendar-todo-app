@@ -204,3 +204,59 @@ Error: Failed to update event
 2025-08-31 19:13:34 [WARN]: Event with id 999 not found for deletion
 2025-08-31 19:13:34 [INFO]: Deleting event with id: 1
 2025-08-31 19:13:34 [WARN]: Event with id 1 not found for deletion
+2025-08-31 20:33:18 [INFO]: 🚀 Backend running on http://localhost:4000
+2025-08-31 20:33:18 [INFO]: 🌍 Environment: production
+2025-08-31 20:33:18 [INFO]: 📊 Database: db.ijtxwcxrfsbdqcokdyni.supabase.co:5432/postgres
+2025-08-31 20:36:38 [INFO]: Received SIGINT. Starting graceful shutdown...
+2025-08-31 20:37:04 [INFO]: 🚀 Backend running on http://localhost:4000
+2025-08-31 20:37:04 [INFO]: 🌍 Environment: production
+2025-08-31 20:37:04 [INFO]: 📊 Database: db.ijtxwcxrfsbdqcokdyni.supabase.co:5432/postgres
+2025-08-31 20:39:05 [INFO]: Received SIGINT. Starting graceful shutdown...
+2025-08-31 20:40:17 [INFO]: 🚀 Backend running on http://localhost:4000
+2025-08-31 20:40:17 [INFO]: 🌍 Environment: production
+2025-08-31 20:40:17 [INFO]: 📊 Database: db.ijtxwcxrfsbdqcokdyni.supabase.co:5432/postgres
+2025-08-31 20:41:54 [INFO]: Received SIGINT. Starting graceful shutdown...
+2025-08-31 20:44:35 [INFO]: 🚀 Backend running on http://localhost:4000
+2025-08-31 20:44:35 [INFO]: 🌍 Environment: production
+2025-08-31 20:44:35 [INFO]: 📊 Database: db.ijtxwcxrfsbdqcokdyni.supabase.co:5432/postgres
+2025-08-31 20:50:15 [INFO]: Received SIGTERM. Starting graceful shutdown...
+2025-08-31 20:50:26 [INFO]: 🚀 Backend running on http://localhost:4000
+2025-08-31 20:50:26 [INFO]: 🌍 Environment: production
+2025-08-31 20:50:26 [INFO]: 📊 Database: db.ijtxwcxrfsbdqcokdyni.supabase.co:5432/postgres
+2025-08-31 20:51:25 [INFO]: Received SIGINT. Starting graceful shutdown...
+2025-08-31 20:51:31 [INFO]: 🚀 Backend running on http://localhost:4000
+2025-08-31 20:51:31 [INFO]: 🌍 Environment: production
+2025-08-31 20:51:31 [INFO]: 📊 Database: db.ijtxwcxrfsbdqcokdyni.supabase.co:5432/postgres
+2025-08-31 20:53:35 [INFO]: ::1 - - [31/Aug/2025:12:53:35 +0000] "GET /health HTTP/1.1" 503 184 "-" "curl/8.7.1"
+2025-08-31 20:55:03 [INFO]: Fetching all todos
+2025-08-31 20:55:05 [ERROR]: TodoRepository.findAll error: Connection terminated due to connection timeout {"cause":{}}
+Error: Connection terminated due to connection timeout
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:13:22)
+    at async TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:21)
+    at async TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:21)
+2025-08-31 20:55:05 [ERROR]: TodoService.getAllTodos error: Failed to fetch todos
+Error: Failed to fetch todos
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:17:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:21)
+    at async TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:21)
+2025-08-31 20:55:05 [ERROR]: TodoController.getAllTodos error: Failed to fetch todos
+Error: Failed to fetch todos
+    at TodoRepository.findAll (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:17:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async TodoService.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:10:21)
+    at async TodoController.getAllTodos (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:8:21)
+2025-08-31 20:55:05 [INFO]: ::1 - - [31/Aug/2025:12:55:05 +0000] "GET /api/todos HTTP/1.1" 500 67 "-" "curl/8.7.1"
+2025-08-31 20:58:27 [INFO]: Received SIGINT. Starting graceful shutdown...
+2025-08-31 20:58:30 [INFO]: 🚀 Backend running on http://localhost:4000
+2025-08-31 20:58:30 [INFO]: 🌍 Environment: production
+2025-08-31 20:58:30 [INFO]: 📊 Database: db.ijtxwcxrfsbdqcokdyni.supabase.co:5432/postgres
+2025-08-31 20:59:08 [INFO]: ::1 - - [31/Aug/2025:12:59:08 +0000] "GET /health HTTP/1.1" 200 180 "-" "curl/8.7.1"
+2025-08-31 20:59:32 [INFO]: Fetching all todos
+2025-08-31 20:59:32 [INFO]: Successfully fetched 2 todos
+2025-08-31 20:59:32 [INFO]: ::1 - - [31/Aug/2025:12:59:32 +0000] "GET /api/todos HTTP/1.1" 200 349 "-" "curl/8.7.1"
+2025-08-31 20:59:37 [INFO]: Fetching all events
+2025-08-31 20:59:37 [INFO]: Successfully fetched 2 events
+2025-08-31 20:59:37 [INFO]: ::1 - - [31/Aug/2025:12:59:37 +0000] "GET /api/events HTTP/1.1" 200 381 "-" "curl/8.7.1"
