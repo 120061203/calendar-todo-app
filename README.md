@@ -229,25 +229,78 @@ RATE_LIMIT_MAX=100
 ## 📚 API 文檔
 
 ### **基礎端點**
-- `GET /health` - 系統健康檢查
-- `GET /` - API 資訊
+- `GET /api/health` - 系統健康檢查
+- `GET /` - API 資訊和狀態
 
-### **待辦事項 API**
-- `GET /api/todos` - 獲取所有待辦事項
-- `POST /api/todos` - 創建新待辦事項
-- `PUT /api/todos/:id` - 更新待辦事項
-- `DELETE /api/todos/:id` - 刪除待辦事項
-- `PATCH /api/todos/:id/toggle` - 切換完成狀態
-- `DELETE /api/todos/completed/bulk` - 批量刪除已完成
-- `GET /api/todos/stats` - 獲取統計資訊
+### **待辦事項 API** (`/api/todos`)
+- `GET /` - 獲取所有待辦事項
+- `GET /:id` - 獲取特定待辦事項
+- `POST /` - 創建新待辦事項
+- `PUT /:id` - 更新待辦事項
+- `DELETE /:id` - 刪除待辦事項
+- `PATCH /:id/toggle` - 切換完成狀態
+- `DELETE /completed/bulk` - 批量刪除已完成的待辦事項
+- `GET /status/:status` - 根據狀態獲取待辦事項
+- `GET /search` - 搜索待辦事項
+- `GET /stats` - 獲取待辦事項統計
 
-### **事件 API**
-- `GET /api/events` - 獲取所有事件
-- `POST /api/events` - 創建新事件
-- `PUT /api/events/:id` - 更新事件
-- `DELETE /api/events/:id` - 刪除事件
-- `GET /api/events/upcoming` - 獲取即將到來的事件
-- `GET /api/events/stats` - 獲取事件統計
+### **事件 API** (`/api/events`)
+- `GET /` - 獲取所有事件
+- `GET /:id` - 獲取特定事件
+- `POST /` - 創建新事件
+- `PUT /:id` - 更新事件
+- `DELETE /:id` - 刪除事件
+- `GET /range` - 根據日期範圍獲取事件
+- `GET /upcoming` - 獲取即將到來的事件
+- `GET /search` - 搜索事件
+- `GET /stats` - 獲取事件統計
+- `GET /:id/availability` - 檢查事件可用性
+
+### **API 響應格式**
+所有 API 端點都遵循統一的響應格式：
+
+#### **成功響應**
+```json
+{
+  "success": true,
+  "data": { ... },
+  "message": "操作成功"
+}
+```
+
+#### **錯誤響應**
+```json
+{
+  "success": false,
+  "error": "錯誤類型",
+  "message": "詳細錯誤訊息",
+  "details": { ... }
+}
+```
+
+#### **HTTP 狀態碼**
+- `200` - 成功
+- `201` - 創建成功
+- `400` - 請求參數錯誤
+- `401` - 未授權
+- `404` - 資源不存在
+- `409` - 資源衝突
+- `429` - 請求過於頻繁
+- `500` - 伺服器內部錯誤
+- `503` - 服務不可用
+
+### **請求驗證**
+所有 POST 和 PUT 請求都包含自動驗證：
+- 必填欄位檢查
+- 資料類型驗證
+- 資料格式驗證
+- 業務邏輯驗證
+
+### **速率限制**
+API 實施速率限制保護：
+- 每分鐘最多 100 個請求
+- 自動 IP 封鎖過於頻繁的請求
+- 可配置的限制參數
 
 完整 API 文檔請參考：[API 文檔](./backend/API_DOCS.md)
 
