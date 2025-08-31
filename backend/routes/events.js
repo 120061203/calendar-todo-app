@@ -1,83 +1,36 @@
-const express = require("express");
-const pool = require("../db");
+const express = require('express');
+const EventController = require('../controllers/EventController');
+const Event = require('../models/Event');
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM calendar_events ORDER BY start_time ASC");
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    res.status(500).json({ error: "Failed to fetch events" });
-  }
-});
+// 獲取所有事件
+router.get('/', EventController.getAllEvents.bind(EventController));
 
-router.post("/", async (req, res) => {
-  try {
-    const { title, start_time, end_time } = req.body;
-    
-    if (!title) {
-      return res.status(400).json({ error: "Title is required" });
-    }
-    
-    if (!start_time) {
-      return res.status(400).json({ error: "Start time is required" });
-    }
-    
-    if (!end_time) {
-      return res.status(400).json({ error: "End time is required" });
-    }
-    
-    const result = await pool.query(
-      "INSERT INTO calendar_events (title, start_time, end_time) VALUES ($1, $2, $3) RETURNING *",
-      [title, start_time, end_time]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    console.error("Error creating event:", error);
-    res.status(500).json({ error: "Failed to create event" });
-  }
-});
+// 獲取特定事件
+router.get('/:id', EventController.getEventById.bind(EventController));
 
-router.put("/:id", async (req, res) => {
-  const { id } = req.params;
-  const { title, start_time, end_time } = req.body;
-  
-  try {
-    const result = await pool.query(
-      "UPDATE calendar_events SET title = $1, start_time = $2, end_time = $3 WHERE id = $4 RETURNING *",
-      [title, start_time, end_time, id]
-    );
-    
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Event not found" });
-    }
-    
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error("Error updating event:", error);
-    res.status(500).json({ error: "Failed to update event" });
-  }
-});
+// 創建事件
+router.post('/', Event.getValidationRules(), EventController.createEvent.bind(EventController));
 
-router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  
-  try {
-    const result = await pool.query(
-      "DELETE FROM calendar_events WHERE id = $1 RETURNING *",
-      [id]
-    );
-    
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Event not found" });
-    }
-    
-    res.json({ message: "Event deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting event:", error);
-    res.status(500).json({ error: "Failed to delete event" });
-  }
-});
+// 更新事件
+router.put('/:id', Event.getValidationRules(), EventController.updateEvent.bind(EventController));
+
+// 刪除事件
+router.delete('/:id', EventController.deleteEvent.bind(EventController));
+
+// 根據日期範圍獲取事件
+router.get('/range', EventController.getEventsByDateRange.bind(EventController));
+
+// 獲取即將到來的事件
+router.get('/upcoming', EventController.getUpcomingEvents.bind(EventController));
+
+// 搜索事件
+router.get('/search', EventController.searchEvents.bind(EventController));
+
+// 獲取事件統計
+router.get('/stats', EventController.getEventStats.bind(EventController));
+
+// 檢查事件可用性
+router.get('/:id/availability', EventController.checkEventAvailability.bind(EventController));
 
 module.exports = router;

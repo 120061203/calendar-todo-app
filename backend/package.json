@@ -1,23 +1,67 @@
 {
   "name": "calendar-backend",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "description": "Professional Calendar Todo Backend with Clean Architecture",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --watchAll=false",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "security-audit": "npm audit",
+    "security-fix": "npm audit fix",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js",
+    "health-check": "curl http://localhost:4000/health"
   },
+  "keywords": [
+    "calendar",
+    "todo",
+    "express",
+    "postgresql",
+    "clean-architecture",
+    "nodejs"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.1.10",
-    "supertest": "^6.3.4"
+    "supertest": "^6.3.4",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.0"
   },
   "dependencies": {
-    "axios": "^1.11.0",
+    "express": "^4.18.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
-    "express": "^4.18.2",
-    "pg": "^8.10.0"
-  }
+    "pg": "^8.10.0",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "express-validator": "^7.0.1",
+    "winston": "^3.11.0",
+    "compression": "^1.7.4",
+    "morgan": "^1.10.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "redis": "^4.6.12"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/calendar-todo-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/calendar-todo-app/issues"
+  },
+  "homepage": "https://github.com/yourusername/calendar-todo-app#readme"
 }

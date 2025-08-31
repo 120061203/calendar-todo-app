@@ -1,84 +1,36 @@
-const express = require("express");
-const pool = require("../db");
+const express = require('express');
+const TodoController = require('../controllers/TodoController');
+const Todo = require('../models/Todo');
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM todos ORDER BY created_at DESC");
-    res.json(result.rows);
-  } catch (error) {
-    console.error("Error fetching todos:", error);
-    res.status(500).json({ error: "Failed to fetch todos" });
-  }
-});
+// 獲取所有待辦事項
+router.get('/', TodoController.getAllTodos.bind(TodoController));
 
-router.post("/", async (req, res) => {
-  try {
-    const { title, due_date } = req.body;
-    
-    if (!title) {
-      return res.status(400).json({ error: "Title is required" });
-    }
-    
-    const result = await pool.query(
-      "INSERT INTO todos (title, due_date) VALUES ($1, $2) RETURNING *",
-      [title, due_date]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    console.error("Error creating todo:", error);
-    res.status(500).json({ error: "Failed to create todo" });
-  }
-});
+// 獲取特定待辦事項
+router.get('/:id', TodoController.getTodoById.bind(TodoController));
 
-router.put("/:id", async (req, res) => {
-  const { id } = req.params;
-  const { title, due_date, completed } = req.body;
-  
-  try {
-    let query, params;
-    
-    if (completed !== undefined) {
-      // 只更新完成狀態
-      query = "UPDATE todos SET completed = $1 WHERE id = $2 RETURNING *";
-      params = [completed, id];
-    } else {
-      // 更新標題和日期
-      query = "UPDATE todos SET title = $1, due_date = $2 WHERE id = $3 RETURNING *";
-      params = [title, due_date, id];
-    }
-    
-    const result = await pool.query(query, params);
-    
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Todo not found" });
-    }
-    
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error("Error updating todo:", error);
-    res.status(500).json({ error: "Failed to update todo" });
-  }
-});
+// 創建待辦事項
+router.post('/', Todo.getValidationRules(), TodoController.createTodo.bind(TodoController));
 
-router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  
-  try {
-    const result = await pool.query(
-      "DELETE FROM todos WHERE id = $1 RETURNING *",
-      [id]
-    );
-    
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Todo not found" });
-    }
-    
-    res.json({ message: "Todo deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting todo:", error);
-    res.status(500).json({ error: "Failed to delete todo" });
-  }
-});
+// 更新待辦事項
+router.put('/:id', Todo.getValidationRules(), TodoController.updateTodo.bind(TodoController));
+
+// 刪除待辦事項
+router.delete('/:id', TodoController.deleteTodo.bind(TodoController));
+
+// 批量刪除已完成的待辦事項
+router.delete('/completed/bulk', TodoController.deleteCompletedTodos.bind(TodoController));
+
+// 切換待辦事項完成狀態
+router.patch('/:id/toggle', TodoController.toggleTodoStatus.bind(TodoController));
+
+// 根據狀態獲取待辦事項
+router.get('/status/:status', TodoController.getTodosByStatus.bind(TodoController));
+
+// 搜索待辦事項
+router.get('/search', TodoController.searchTodos.bind(TodoController));
+
+// 獲取待辦事項統計
+router.get('/stats', TodoController.getTodoStats.bind(TodoController));
 
 module.exports = router;

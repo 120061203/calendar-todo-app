@@ -1,0 +1,160 @@
+2025-08-31 19:13:33 [ERROR]: TodoService.createTodo error: Validation failed: 標題不能為空
+Error: Validation failed: 標題不能為空
+    at TodoService.createTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:49:15)
+    at TodoController.createTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:46:38)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at middleware (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express-validator/lib/middlewares/check.js:16:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-08-31 19:13:33 [ERROR]: TodoController.createTodo error: Validation failed: 標題不能為空
+Error: Validation failed: 標題不能為空
+    at TodoService.createTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:49:15)
+    at TodoController.createTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:46:38)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at middleware (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express-validator/lib/middlewares/check.js:16:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-08-31 19:13:33 [ERROR]: TodoService.updateTodo error for id 1: Validation failed: 標題不能為空
+Error: Validation failed: 標題不能為空
+    at TodoService.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:80:15)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TodoController.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:72:20)
+2025-08-31 19:13:33 [ERROR]: TodoController.updateTodo error: Validation failed: 標題不能為空
+Error: Validation failed: 標題不能為空
+    at TodoService.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:80:15)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TodoController.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:72:20)
+2025-08-31 19:13:33 [ERROR]: TodoRepository.update error: column "updated_at" of relation "todos" does not exist {"length":130,"name":"error","severity":"ERROR","code":"42703","position":"79","file":"analyze.c","line":"2536","routine":"transformUpdateTargetList"}
+error: column "updated_at" of relation "todos" does not exist
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/pg-pool/index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TodoRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:73:22)
+    at TodoService.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:83:27)
+    at TodoController.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:72:20)
+2025-08-31 19:13:33 [ERROR]: TodoService.updateTodo error for id 1: Failed to update todo
+Error: Failed to update todo
+    at TodoRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:78:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TodoService.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:83:27)
+    at TodoController.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:72:20)
+2025-08-31 19:13:33 [ERROR]: TodoController.updateTodo error: Failed to update todo
+Error: Failed to update todo
+    at TodoRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:78:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TodoService.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:83:27)
+    at TodoController.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:72:20)
+2025-08-31 19:13:33 [ERROR]: TodoRepository.update error: column "updated_at" of relation "todos" does not exist {"length":130,"name":"error","severity":"ERROR","code":"42703","position":"79","file":"analyze.c","line":"2536","routine":"transformUpdateTargetList"}
+error: column "updated_at" of relation "todos" does not exist
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/pg-pool/index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TodoRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:73:22)
+    at TodoService.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:83:27)
+    at TodoController.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:72:20)
+2025-08-31 19:13:33 [ERROR]: TodoService.updateTodo error for id 1: Failed to update todo
+Error: Failed to update todo
+    at TodoRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:78:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TodoService.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:83:27)
+    at TodoController.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:72:20)
+2025-08-31 19:13:33 [ERROR]: TodoController.updateTodo error: Failed to update todo
+Error: Failed to update todo
+    at TodoRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/TodoRepository.js:78:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at TodoService.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/TodoService.js:83:27)
+    at TodoController.updateTodo (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/TodoController.js:72:20)
+2025-08-31 19:13:34 [ERROR]: EventService.createEvent error: Validation failed: 標題不能為空
+Error: Validation failed: 標題不能為空
+    at EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:49:15)
+    at EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:40)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at middleware (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express-validator/lib/middlewares/check.js:16:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-08-31 19:13:34 [ERROR]: EventController.createEvent error: Validation failed: 標題不能為空
+Error: Validation failed: 標題不能為空
+    at EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:49:15)
+    at EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:40)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at middleware (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express-validator/lib/middlewares/check.js:16:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-08-31 19:13:34 [ERROR]: EventService.createEvent error: Validation failed: 開始時間無效
+Error: Validation failed: 開始時間無效
+    at EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:49:15)
+    at EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:40)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at middleware (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express-validator/lib/middlewares/check.js:16:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-08-31 19:13:34 [ERROR]: EventController.createEvent error: Validation failed: 開始時間無效
+Error: Validation failed: 開始時間無效
+    at EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:49:15)
+    at EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:40)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at middleware (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express-validator/lib/middlewares/check.js:16:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-08-31 19:13:34 [ERROR]: EventService.createEvent error: Validation failed: 結束時間無效
+Error: Validation failed: 結束時間無效
+    at EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:49:15)
+    at EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:40)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at middleware (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express-validator/lib/middlewares/check.js:16:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-08-31 19:13:34 [ERROR]: EventController.createEvent error: Validation failed: 結束時間無效
+Error: Validation failed: 結束時間無效
+    at EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:49:15)
+    at EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:40)
+    at Layer.handle [as handle_request] (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express/lib/router/route.js:149:13)
+    at middleware (/Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/express-validator/lib/middlewares/check.js:16:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-08-31 19:13:34 [ERROR]: EventService.createEvent error: Event time conflicts with existing events
+Error: Event time conflicts with existing events
+    at EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:60:15)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:21)
+2025-08-31 19:13:34 [ERROR]: EventController.createEvent error: Event time conflicts with existing events
+Error: Event time conflicts with existing events
+    at EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:60:15)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:21)
+2025-08-31 19:13:34 [ERROR]: EventRepository.update error: column "updated_at" of relation "calendar_events" does not exist {"length":140,"name":"error","severity":"ERROR","code":"42703","position":"90","file":"analyze.c","line":"2536","routine":"transformUpdateTargetList"}
+error: column "updated_at" of relation "calendar_events" does not exist
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/pg-pool/index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EventRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/EventRepository.js:73:22)
+    at EventService.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:111:28)
+    at EventController.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:79:21)
+2025-08-31 19:13:34 [ERROR]: EventService.updateEvent error for id 1: Failed to update event
+Error: Failed to update event
+    at EventRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/EventRepository.js:78:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EventService.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:111:28)
+    at EventController.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:79:21)
+2025-08-31 19:13:34 [ERROR]: EventController.updateEvent error: Failed to update event
+Error: Failed to update event
+    at EventRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/EventRepository.js:78:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EventService.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:111:28)
+    at EventController.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:79:21)
+2025-08-31 19:13:34 [ERROR]: EventRepository.update error: column "updated_at" of relation "calendar_events" does not exist {"length":140,"name":"error","severity":"ERROR","code":"42703","position":"90","file":"analyze.c","line":"2536","routine":"transformUpdateTargetList"}
+error: column "updated_at" of relation "calendar_events" does not exist
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/pg-pool/index.js:45:11
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EventRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/EventRepository.js:73:22)
+    at EventService.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:111:28)
+    at EventController.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:79:21)
+2025-08-31 19:13:34 [ERROR]: EventService.updateEvent error for id 1: Failed to update event
+Error: Failed to update event
+    at EventRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/EventRepository.js:78:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EventService.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:111:28)
+    at EventController.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:79:21)
+2025-08-31 19:13:34 [ERROR]: EventController.updateEvent error: Failed to update event
+Error: Failed to update event
+    at EventRepository.update (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/EventRepository.js:78:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at EventService.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:111:28)
+    at EventController.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:79:21)
