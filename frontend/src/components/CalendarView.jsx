@@ -185,7 +185,8 @@ export default function CalendarView() {
       
       console.log("格式化後的事件:", formattedEvent);
       
-      setEvents([...events, formattedEvent]);
+      // 重新載入所有事件，確保時區處理一致
+      await loadEvents();
       setNewEvent({ title: "", start_time: "", end_time: "" });
       setOpenDialog(false);
     } catch (error) {
@@ -238,17 +239,8 @@ export default function CalendarView() {
       
       const res = await updateEvent(editingEvent.id, eventData);
       
-      // 更新本地事件列表，使用時區處理函數
-      setEvents(events.map(event => 
-        event.id === editingEvent.id 
-          ? {
-              ...event,
-              title: res.data.title,
-              start: handleProductionTimezone(res.data.start_time),
-              end: handleProductionTimezone(res.data.end_time)
-            }
-          : event
-      ));
+      // 重新載入所有事件，確保時區處理一致
+      await loadEvents();
       
       handleCloseDialog();
     } catch (error) {
@@ -262,8 +254,8 @@ export default function CalendarView() {
     try {
       await deleteEvent(editingEvent.id);
       
-      // 從本地事件列表中移除
-      setEvents(events.filter(event => event.id !== editingEvent.id));
+      // 重新載入所有事件，確保時區處理一致
+      await loadEvents();
       
       handleCloseDialog();
     } catch (error) {
