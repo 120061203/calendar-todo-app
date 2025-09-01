@@ -138,22 +138,28 @@ export default function CalendarView() {
 
   const loadEvents = async () => {
     try {
+      console.log("開始載入事件...");
       const res = await getEvents();
+      console.log("API 回應:", res.data);
       
       // 修復：使用強制本地時間函數，避免時區轉換
       const formattedEvents = res.data.map(e => {
+        console.log("處理事件:", e);
         // 使用強制本地時間函數
         const start = handleProductionTimezone(e.start_time);
         const end = handleProductionTimezone(e.end_time);
         
-        return {
+        const formattedEvent = {
           id: e.id,
           title: e.title,
           start: start,
           end: end
         };
+        console.log("格式化後:", formattedEvent);
+        return formattedEvent;
       });
       
+      console.log("最終事件列表:", formattedEvents);
       setEvents(formattedEvents);
     } catch (error) {
       console.error("Failed to load events:", error);
