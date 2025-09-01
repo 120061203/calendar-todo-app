@@ -3,7 +3,7 @@ const getApiUrl = () => {
   // 檢查是否在生產環境
   if (import.meta.env.PROD) {
     // 生產環境使用 Vercel 部署的後端
-    return 'https://calendar-todo-app-pi.vercel.app/api';
+    return 'https://calendar-todo-j12wxfpd1-xiaosongs-projects-d5921ccf.vercel.app/api';
   }
   
   // 開發環境使用本地後端
