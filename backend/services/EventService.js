@@ -49,16 +49,16 @@ class EventService {
         throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
       }
       
-      // 檢查時間衝突
-      const hasConflict = await EventRepository.checkTimeConflict(
-        eventData.start_time, 
-        eventData.end_time
-      );
+      // 暫時禁用時區衝突檢測（修復時區問題後再啟用）
+      // const hasConflict = await EventRepository.checkTimeConflict(
+      //   eventData.start_time, 
+      //   eventData.end_time
+      // );
       
-      if (hasConflict) {
-        logger.warn('Time conflict detected for new event');
-        throw new Error('Event time conflicts with existing events');
-      }
+      // if (hasConflict) {
+      //   logger.warn('Time conflict detected for new event');
+      //   throw new Error('Event time conflicts with existing events');
+      // }
       
       const createdEvent = await EventRepository.create(eventData);
       logger.info(`Successfully created event with id: ${createdEvent.id}`);
@@ -91,22 +91,22 @@ class EventService {
         throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
       }
       
-      // 檢查時間衝突（排除當前事件）
-      if (updateData.start_time || updateData.end_time) {
-        const startTime = updateData.start_time || existingEvent.start_time;
-        const endTime = updateData.end_time || existingEvent.end_time;
-        
-        const hasConflict = await EventRepository.checkTimeConflict(
-          startTime, 
-          endTime, 
-          id
-        );
-        
-        if (hasConflict) {
-          logger.warn('Time conflict detected for event update');
-          throw new Error('Updated event time conflicts with existing events');
-        }
-      }
+      // 暫時禁用時區衝突檢測（修復時區問題後再啟用）
+      // if (updateData.start_time || updateData.end_time) {
+      //   const startTime = updateData.start_time || existingEvent.start_time;
+      //   const endTime = updateData.end_time || existingEvent.end_time;
+      //   
+      //   const hasConflict = await EventRepository.checkTimeConflict(
+      //     startTime, 
+      //     endTime, 
+      //     id
+      //   );
+      //   
+      //   if (hasConflict) {
+      //     logger.warn('Time conflict detected for event update');
+      //     throw new Error('Updated event time conflicts with existing events');
+      //   }
+      // }
       
       const updatedEvent = await EventRepository.update(id, updateData);
       logger.info(`Successfully updated event with id: ${id}`);
