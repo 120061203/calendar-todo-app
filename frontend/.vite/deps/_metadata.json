@@ -2,54 +2,54 @@
   "hash": "4c30814c",
   "configHash": "f6bc9c9b",
   "lockfileHash": "117e9470",
-  "browserHash": "40c6d3a1",
+  "browserHash": "ef25de2e",
   "optimized": {
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "c83d2118",
+      "fileHash": "12c8ec82",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "14b876c0",
+      "fileHash": "28a1694e",
       "needsInterop": true
     },
     "@mui/material": {
       "src": "../../node_modules/@mui/material/index.js",
       "file": "@mui_material.js",
-      "fileHash": "a78f4867",
+      "fileHash": "83ecd81c",
       "needsInterop": false
     },
     "@mui/icons-material": {
       "src": "../../node_modules/@mui/icons-material/esm/index.js",
       "file": "@mui_icons-material.js",
-      "fileHash": "62b47a8f",
+      "fileHash": "ee7e2a78",
       "needsInterop": false
     },
     "@mui/material/styles": {
       "src": "../../node_modules/@mui/material/styles/index.js",
       "file": "@mui_material_styles.js",
-      "fileHash": "855734dd",
-      "needsInterop": false
-    },
-    "axios": {
-      "src": "../../node_modules/axios/index.js",
-      "file": "axios.js",
-      "fileHash": "91ab61e4",
+      "fileHash": "192543f7",
       "needsInterop": false
     },
     "@fullcalendar/react": {
       "src": "../../node_modules/@fullcalendar/react/dist/index.js",
       "file": "@fullcalendar_react.js",
-      "fileHash": "bc6e5e30",
+      "fileHash": "bade613f",
       "needsInterop": false
     },
     "@fullcalendar/daygrid": {
       "src": "../../node_modules/@fullcalendar/daygrid/index.js",
       "file": "@fullcalendar_daygrid.js",
-      "fileHash": "89b5f7c8",
+      "fileHash": "f6d2b338",
+      "needsInterop": false
+    },
+    "axios": {
+      "src": "../../node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "a4a9d94f",
       "needsInterop": false
     }
   },
