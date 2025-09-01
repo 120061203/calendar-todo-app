@@ -224,11 +224,25 @@ export default function CalendarView() {
         
         // 如果是重複事件，生成所有重複實例
         if (e.repeat_type && e.repeat_until) {
+          console.log(`🔄 檢測到重複事件: ${e.title}`, {
+            repeat_type: e.repeat_type,
+            repeat_until: e.repeat_until,
+            start_time: e.start_time,
+            end_time: e.end_time
+          });
+          
           const repeatingEvents = generateRepeatingEvents({
             ...e,
             start_time: e.start_time,
             end_time: e.end_time
           });
+          
+          console.log(`🔄 生成了 ${repeatingEvents.length} 個重複事件:`, repeatingEvents.map(ev => ({
+            id: ev.id,
+            title: ev.title,
+            start_time: ev.start_time,
+            end_time: ev.end_time
+          })));
           
           repeatingEvents.forEach((repeatingEvent, index) => {
             const isAllDayRepeating = repeatingEvent.is_all_day || false;
