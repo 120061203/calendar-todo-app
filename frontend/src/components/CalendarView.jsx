@@ -135,6 +135,8 @@ export default function CalendarView() {
     let currentStart = new Date(startDate);
     let currentEnd = new Date(endDate);
     
+    console.log(`生成重複事件: ${event.title}, 類型: ${event.repeat_type}, 開始: ${startDate.toLocaleDateString()}, 結束: ${repeatUntil.toLocaleDateString()}`);
+    
     while (currentStart < repeatUntil) {
       // 根據重複類型計算下一個日期
       switch (event.repeat_type) {
@@ -147,8 +149,17 @@ export default function CalendarView() {
           currentEnd.setDate(currentEnd.getDate() + 7);
           break;
         case 'monthly':
-          currentStart.setMonth(currentStart.getMonth() + 1);
-          currentEnd.setMonth(currentEnd.getMonth() + 1);
+          // 每月重複：保持相同的日期
+          const nextMonth = new Date(currentStart);
+          nextMonth.setMonth(nextMonth.getMonth() + 1);
+          
+          // 處理月末日期問題（如 1/31 -> 2/28）
+          const originalDay = currentStart.getDate();
+          const maxDaysInNextMonth = new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0).getDate();
+          const adjustedDay = Math.min(originalDay, maxDaysInNextMonth);
+          
+          currentStart = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), adjustedDay, currentStart.getHours(), currentStart.getMinutes());
+          currentEnd = new Date(currentEnd.getFullYear(), currentEnd.getMonth() + 1, adjustedDay, currentEnd.getHours(), currentEnd.getMinutes());
           break;
         case 'yearly':
           currentStart.setFullYear(currentStart.getFullYear() + 1);
@@ -156,10 +167,12 @@ export default function CalendarView() {
           break;
       }
       
+      console.log(`生成事件: ${currentStart.toLocaleDateString()} - ${currentEnd.toLocaleDateString()}`);
+      
       if (currentStart < repeatUntil) {
         const eventId = event.original_event_id ? `${event.original_event_id}_${events.length}` : `${event.id}_${events.length}`;
         
-        events.push({
+        const newEvent = {
           ...event,
           id: eventId,
           start_time: event.is_all_day 
@@ -169,10 +182,14 @@ export default function CalendarView() {
             ? currentEnd.toISOString().split('T')[0]
             : currentEnd.toISOString().split('T')[0] + 'T' + currentEnd.toTimeString().slice(0, 5),
           original_event_id: event.original_event_id || event.id
-        });
+        };
+        
+        events.push(newEvent);
+        console.log(`添加重複事件: ${newEvent.id}, 時間: ${newEvent.start_time} - ${newEvent.end_time}`);
       }
     }
     
+    console.log(`總共生成 ${events.length} 個事件`);
     return events;
   };
 
@@ -251,6 +268,8 @@ export default function CalendarView() {
         const startDate = new Date(newEvent.start_time);
         const count = parseInt(newEvent.repeat_count);
         
+        console.log(`轉換重複次數: ${count} 次, 類型: ${newEvent.repeat_type}, 開始日期: ${startDate.toLocaleDateString()}`);
+        
         switch (newEvent.repeat_type) {
           case 'daily':
             startDate.setDate(startDate.getDate() + count - 1);
@@ -259,7 +278,17 @@ export default function CalendarView() {
             startDate.setDate(startDate.getDate() + (count - 1) * 7);
             break;
           case 'monthly':
-            startDate.setMonth(startDate.getMonth() + count - 1);
+            // 每月重複：保持相同的日期
+            const targetMonth = new Date(startDate);
+            targetMonth.setMonth(targetMonth.getMonth() + count - 1);
+            
+            // 處理月末日期問題
+            const originalDay = startDate.getDate();
+            const maxDaysInTargetMonth = new Date(targetMonth.getFullYear(), targetMonth.getMonth() + 1, 0).getDate();
+            const adjustedDay = Math.min(originalDay, maxDaysInTargetMonth);
+            
+            targetMonth.setDate(adjustedDay);
+            startDate.setTime(targetMonth.getTime());
             break;
           case 'yearly':
             startDate.setFullYear(startDate.getFullYear() + count - 1);
@@ -267,6 +296,7 @@ export default function CalendarView() {
         }
         
         repeatUntil = startDate.toISOString().split('T')[0];
+        console.log(`計算結束日期: ${repeatUntil}`);
       }
       
       const eventData = {
@@ -363,6 +393,8 @@ export default function CalendarView() {
         const startDate = new Date(editingEvent.start_time);
         const count = parseInt(editingEvent.repeat_count);
         
+        console.log(`編輯事件 - 轉換重複次數: ${count} 次, 類型: ${editingEvent.repeat_type}, 開始日期: ${startDate.toLocaleDateString()}`);
+        
         switch (editingEvent.repeat_type) {
           case 'daily':
             startDate.setDate(startDate.getDate() + count - 1);
@@ -371,7 +403,17 @@ export default function CalendarView() {
             startDate.setDate(startDate.getDate() + (count - 1) * 7);
             break;
           case 'monthly':
-            startDate.setMonth(startDate.getMonth() + count - 1);
+            // 每月重複：保持相同的日期
+            const targetMonth = new Date(startDate);
+            targetMonth.setMonth(targetMonth.getMonth() + count - 1);
+            
+            // 處理月末日期問題
+            const originalDay = startDate.getDate();
+            const maxDaysInTargetMonth = new Date(targetMonth.getFullYear(), targetMonth.getMonth() + 1, 0).getDate();
+            const adjustedDay = Math.min(originalDay, maxDaysInTargetMonth);
+            
+            targetMonth.setDate(adjustedDay);
+            startDate.setTime(targetMonth.getTime());
             break;
           case 'yearly':
             startDate.setFullYear(startDate.getFullYear() + count - 1);
@@ -379,6 +421,7 @@ export default function CalendarView() {
         }
         
         repeatUntil = startDate.toISOString().split('T')[0];
+        console.log(`編輯事件 - 計算結束日期: ${repeatUntil}`);
       }
       
       const eventData = {
@@ -569,6 +612,40 @@ export default function CalendarView() {
                 <Typography variant="subtitle2" color="text.secondary">
                   重複設定
                 </Typography>
+                
+                {/* 智能重複提示 */}
+                {(editingEvent ? editingEvent.repeat_type : newEvent.repeat_type) && (
+                  <Box sx={{ p: 1, bgcolor: "primary.50", borderRadius: 1, border: "1px solid", borderColor: "primary.200" }}>
+                    <Typography variant="caption" color="primary.main" sx={{ fontWeight: "bold" }}>
+                      📅 重複提示：
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+                      {(() => {
+                        const currentEvent = editingEvent || newEvent;
+                        const startDate = new Date(currentEvent.start_time);
+                        const repeatType = currentEvent.repeat_type;
+                        
+                        switch (repeatType) {
+                          case 'daily':
+                            return `每日重複，從 ${startDate.toLocaleDateString('zh-TW')} 開始`;
+                          case 'weekly':
+                            const weekdays = ['週日', '週一', '週二', '週三', '週四', '週五', '週六'];
+                            const weekday = weekdays[startDate.getDay()];
+                            return `每週${weekday}重複，從 ${startDate.toLocaleDateString('zh-TW')} 開始`;
+                          case 'monthly':
+                            const dayOfMonth = startDate.getDate();
+                            return `每月${dayOfMonth}號重複，從 ${startDate.toLocaleDateString('zh-TW')} 開始`;
+                          case 'yearly':
+                            const month = startDate.getMonth() + 1;
+                            const day = startDate.getDate();
+                            return `每年${month}月${day}號重複，從 ${startDate.toLocaleDateString('zh-TW')} 開始`;
+                          default:
+                            return '';
+                        }
+                      })()}
+                    </Typography>
+                  </Box>
+                )}
                 
                 <FormControl fullWidth size="small">
                   <InputLabel>重複類型</InputLabel>
