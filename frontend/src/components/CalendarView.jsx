@@ -306,41 +306,7 @@ export default function CalendarView() {
         console.log(`計算結束日期: ${repeatUntil}`);
       }
       
-      // 原有的轉換邏輯（保留作為備用）
-      if (newEvent.repeat_type && newEvent.repeat_count && !repeatUntil) {
-        const startDate = new Date(newEvent.start_time);
-        const count = parseInt(newEvent.repeat_count);
-        
-        console.log(`轉換重複次數: ${count} 次, 類型: ${newEvent.repeat_type}, 開始日期: ${startDate.toLocaleDateString()}`);
-        
-        switch (newEvent.repeat_type) {
-          case 'daily':
-            startDate.setDate(startDate.getDate() + count - 1);
-            break;
-          case 'weekly':
-            startDate.setDate(startDate.getDate() + (count - 1) * 7);
-            break;
-          case 'monthly':
-            // 每月重複：保持相同的日期
-            const targetMonth = new Date(startDate);
-            targetMonth.setMonth(targetMonth.getMonth() + count - 1);
-            
-            // 處理月末日期問題
-            const originalDay = startDate.getDate();
-            const maxDaysInTargetMonth = new Date(targetMonth.getFullYear(), targetMonth.getMonth() + 1, 0).getDate();
-            const adjustedDay = Math.min(originalDay, maxDaysInTargetMonth);
-            
-            targetMonth.setDate(adjustedDay);
-            startDate.setTime(targetMonth.getTime());
-            break;
-          case 'yearly':
-            startDate.setFullYear(startDate.getFullYear() + count - 1);
-            break;
-        }
-        
-        repeatUntil = startDate.toISOString().split('T')[0];
-        console.log(`計算結束日期: ${repeatUntil}`);
-      }
+
       
       const eventData = {
         title: newEvent.title,
@@ -352,7 +318,15 @@ export default function CalendarView() {
         original_event_id: null
       };
       
-      console.log("發送事件數據:", eventData);
+      console.log("🚀 最終發送事件數據:", {
+        ...eventData,
+        debug_info: {
+          original_repeat_type: newEvent.repeat_type,
+          original_repeat_count: newEvent.repeat_count,
+          original_repeat_until: newEvent.repeat_until,
+          calculated_repeat_until: repeatUntil
+        }
+      });
       
       const res = await addEvent(eventData);
       
