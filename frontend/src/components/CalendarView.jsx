@@ -79,15 +79,7 @@ export default function CalendarView() {
   const forceLocalTime = (timeString) => {
     if (!timeString) return null;
     
-    // 處理 UTC 格式 (結尾有 Z)
-    if (timeString.endsWith('Z')) {
-      const utcDate = new Date(timeString);
-      // 直接使用本地時間，不進行額外轉換
-      console.log(`UTC 直接解析: ${timeString} -> ${utcDate.toLocaleString('zh-TW')}`);
-      return utcDate;
-    }
-    
-    // 處理本地格式 YYYY-MM-DD HH:mm:ss
+    // 強制以本地時間解析，避免時區轉換
     const match = timeString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
     if (match) {
       const [, year, month, day, hour, minute, second] = match;
@@ -110,48 +102,58 @@ export default function CalendarView() {
     return null;
   };
 
-  // 統一時區處理：處理所有時間格式
+  // 生產環境專用：處理 Supabase 時區問題
   const handleProductionTimezone = (timeString) => {
     if (!timeString) return null;
     
-    // 直接使用 forceLocalTime，它已經能處理所有格式
+    // 檢查是否在生產環境
+    const isProduction = import.meta.env.PROD;
+    
+    if (isProduction) {
+      console.log('生產環境時區處理:', timeString);
+      
+      // 如果是 UTC 格式 (結尾有 Z)，需要轉換為本地時間
+      if (timeString.endsWith('Z')) {
+        const utcDate = new Date(timeString);
+        // 強制轉換為本地時間 (UTC+8)
+        const localDate = new Date(utcDate.getTime() + (8 * 60 * 60 * 1000));
+        console.log(`UTC 轉本地: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
+        return localDate;
+      }
+      
+      // 如果不是 UTC 格式，但仍然是時間字符串，也進行處理
+      if (typeof timeString === 'string' && timeString.includes('-') && timeString.includes(':')) {
+        // 假設這是本地時間字符串，直接解析
+        const localDate = new Date(timeString);
+        if (!isNaN(localDate.getTime())) {
+          console.log(`本地時間解析: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
+          return localDate;
+        }
+      }
+    }
+    
+    // 非生產環境或非 UTC 格式，使用原有邏輯
     return forceLocalTime(timeString);
   };
 
   const loadEvents = async () => {
     try {
-      console.log("開始載入事件...");
       const res = await getEvents();
-      console.log("API 回應:", res.data);
       
       // 修復：使用強制本地時間函數，避免時區轉換
       const formattedEvents = res.data.map(e => {
-        console.log("處理事件:", e);
-        console.log("原始時間:", {
-          start: e.start_time,
-          end: e.end_time
-        });
-        
         // 使用強制本地時間函數
         const start = handleProductionTimezone(e.start_time);
         const end = handleProductionTimezone(e.end_time);
         
-        console.log("轉換後時間:", {
-          start: start?.toLocaleString('zh-TW'),
-          end: end?.toLocaleString('zh-TW')
-        });
-        
-        const formattedEvent = {
+        return {
           id: e.id,
           title: e.title,
           start: start,
           end: end
         };
-        console.log("格式化後:", formattedEvent);
-        return formattedEvent;
       });
       
-      console.log("最終事件列表:", formattedEvents);
       setEvents(formattedEvents);
     } catch (error) {
       console.error("Failed to load events:", error);
@@ -223,7 +225,17 @@ export default function CalendarView() {
   };
 
   const handleEditEvent = async () => {
-    if (!editingEvent.title || !editingEvent.start_time || !editingEvent.end_time) return;
+    console.log("開始更新事件...");
+    console.log("編輯事件數據:", editingEvent);
+    
+    if (!editingEvent.title || !editingEvent.start_time || !editingEvent.end_time) {
+      console.error("缺少必要字段:", {
+        title: editingEvent.title,
+        start_time: editingEvent.start_time,
+        end_time: editingEvent.end_time
+      });
+      return;
+    }
     
     try {
       // 確保時間以本地時間格式發送，不進行時區轉換
@@ -236,13 +248,16 @@ export default function CalendarView() {
       console.log("更新事件數據:", eventData);
       
       const res = await updateEvent(editingEvent.id, eventData);
+      console.log("API 回應:", res.data);
       
       // 重新載入所有事件，確保時區處理一致
       await loadEvents();
       
       handleCloseDialog();
+      console.log("事件更新完成");
     } catch (error) {
-      console.error("Failed to edit event:", error);
+      console.error("更新事件失敗:", error);
+      console.error("錯誤詳情:", error.response?.data || error.message);
     }
   };
 
@@ -326,12 +341,16 @@ export default function CalendarView() {
             editable={true}
             selectable={true}
             timeZone="local"
-            eventTimeFormat={{
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: false
-            }}
-            eventDisplay="block"
+                    eventTimeFormat={{
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }}
+        slotLabelFormat={{
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }}
           />
         </Box>
 
@@ -494,10 +513,12 @@ export default function CalendarView() {
                   快速設定時長：
                 </Typography>
                 {[
-                  { label: "30分鐘", minutes: 30 },
-                  { label: "1小時", minutes: 60 },
-                  { label: "2小時", minutes: 120 },
-                  { label: "半天", minutes: 240 }
+                                  { label: "30分鐘", minutes: 30 },
+                { label: "1小時", minutes: 60 },
+                { label: "2小時", minutes: 120 },
+                { label: "4小時", minutes: 240 },
+                { label: "6小時", minutes: 360 },
+                { label: "12小時", minutes: 720 }
                 ].map((option) => (
                   <Button
                     key={option.minutes}
@@ -585,8 +606,7 @@ export default function CalendarView() {
                 disabled={
                   !editingEvent.title || 
                   !editingEvent.start_time || 
-                  !editingEvent.end_time ||
-                  new Date(editingEvent.end_time) <= new Date(editingEvent.start_time)
+                  !editingEvent.end_time
                 }
                 sx={{ 
                   minWidth: 80,

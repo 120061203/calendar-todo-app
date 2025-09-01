@@ -61,6 +61,7 @@ class EventRepository {
         return null;
       }
 
+      // 使用 Event 模型的 update 方法
       event.update(updateData);
       
       const query = `
@@ -75,6 +76,12 @@ class EventRepository {
       return Event.create(result.rows[0]);
     } catch (error) {
       logger.error('EventRepository.update error:', error);
+      logger.error('Error details:', {
+        id,
+        updateData,
+        errorMessage: error.message,
+        errorStack: error.stack
+      });
       throw new Error('Failed to update event');
     }
   }
