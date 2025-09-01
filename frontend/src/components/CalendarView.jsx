@@ -21,15 +21,10 @@ import {
 import { 
   Event as EventIcon, 
   Add as AddIcon,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  Repeat as RepeatIcon,
-  AllInclusive as AllDayIcon
+  Schedule as ScheduleIcon
 } from "@mui/icons-material";
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
 import { getEvents, addEvent, updateEvent, deleteEvent } from "../api";
 
 export default function CalendarView() {
@@ -39,10 +34,7 @@ export default function CalendarView() {
   const [newEvent, setNewEvent] = useState({
     title: "",
     start_time: "",
-    end_time: "",
-    is_all_day: false,
-    repeat_type: "",
-    repeat_until: ""
+    end_time: ""
   });
 
   useEffect(() => {
@@ -105,6 +97,13 @@ export default function CalendarView() {
     return null;
   };
 
+  // 修復：強制本地時間解析，避免時區轉換
+  // 統一時區處理：直接使用資料庫時間
+  const handleProductionTimezone = (timeString) => {
+    if (!timeString) return null;
+    return parseLocalTime(timeString);
+  };
+
   const loadEvents = async () => {
     try {
       const res = await getEvents();
@@ -119,13 +118,7 @@ export default function CalendarView() {
           id: e.id,
           title: e.title,
           start: start,
-          end: end,
-          allDay: e.is_all_day || false,
-          extendedProps: {
-            repeatType: e.repeat_type,
-            repeatUntil: e.repeat_until,
-            originalEventId: e.original_event_id
-          }
+          end: end
         };
       });
       
@@ -136,17 +129,14 @@ export default function CalendarView() {
   };
 
   const handleAddEvent = async () => {
-    if (!newEvent.title || (!newEvent.is_all_day && (!newEvent.start_time || !newEvent.end_time))) return;
+    if (!newEvent.title || !newEvent.start_time || !newEvent.end_time) return;
     
     try {
       // 確保時間以本地時間格式發送，不進行時區轉換
       const eventData = {
         title: newEvent.title,
         start_time: newEvent.start_time,
-        end_time: newEvent.end_time,
-        is_all_day: newEvent.is_all_day,
-        repeat_type: newEvent.repeat_type || null,
-        repeat_until: newEvent.repeat_until || null
+        end_time: newEvent.end_time
       };
       
       console.log("發送事件數據:", eventData);
@@ -157,21 +147,15 @@ export default function CalendarView() {
       const formattedEvent = {
         id: res.data.id,
         title: res.data.title,
-        start: parseLocalTime(res.data.start_time),
-        end: parseLocalTime(res.data.end_time),
-        allDay: res.data.is_all_day || false,
-        extendedProps: {
-          repeatType: res.data.repeat_type,
-          repeatUntil: res.data.repeat_until,
-          originalEventId: res.data.original_event_id
-        }
+        start: handleProductionTimezone(res.data.start_time),
+        end: handleProductionTimezone(res.data.end_time)
       };
       
       console.log("格式化後的事件:", formattedEvent);
       
       // 重新載入所有事件，確保時區處理一致
       await loadEvents();
-      setNewEvent({ title: "", start_time: "", end_time: "", is_all_day: false, repeat_type: "", repeat_until: "" });
+      setNewEvent({ title: "", start_time: "", end_time: "" });
       setOpenDialog(false);
     } catch (error) {
       console.error("Failed to add event:", error);
@@ -181,7 +165,7 @@ export default function CalendarView() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setEditingEvent(null);
-    setNewEvent({ title: "", start_time: "", end_time: "", is_all_day: false, repeat_type: "", repeat_until: "" });
+    setNewEvent({ title: "", start_time: "", end_time: "" });
   };
 
   const handleEventClick = (clickInfo) => {
@@ -203,10 +187,7 @@ export default function CalendarView() {
       id: clickInfo.event.id,
       title: clickInfo.event.title,
       start_time: formatDateForInput(clickInfo.event.start),
-      end_time: formatDateForInput(clickInfo.event.end),
-      is_all_day: clickInfo.event.allDay,
-      repeat_type: clickInfo.event.extendedProps.repeatType || "",
-      repeat_until: clickInfo.event.extendedProps.repeatUntil || ""
+      end_time: formatDateForInput(clickInfo.event.end)
     });
     setOpenDialog(true);
   };
@@ -215,8 +196,12 @@ export default function CalendarView() {
     console.log("開始更新事件...");
     console.log("編輯事件數據:", editingEvent);
     
-    if (!editingEvent.title || (!editingEvent.is_all_day && (!editingEvent.start_time || !editingEvent.end_time))) {
-      console.error("缺少必要字段:", editingEvent);
+    if (!editingEvent.title || !editingEvent.start_time || !editingEvent.end_time) {
+      console.error("缺少必要字段:", {
+        title: editingEvent.title,
+        start_time: editingEvent.start_time,
+        end_time: editingEvent.end_time
+      });
       return;
     }
     
@@ -225,10 +210,7 @@ export default function CalendarView() {
       const eventData = {
         title: editingEvent.title,
         start_time: editingEvent.start_time,
-        end_time: editingEvent.end_time,
-        is_all_day: editingEvent.is_all_day,
-        repeat_type: editingEvent.repeat_type || null,
-        repeat_until: editingEvent.repeat_until || null
+        end_time: editingEvent.end_time
       };
       
       console.log("更新事件數據:", eventData);
@@ -259,37 +241,6 @@ export default function CalendarView() {
       handleCloseDialog();
     } catch (error) {
       console.error("Failed to delete event:", error);
-    }
-  };
-
-  // 處理事件拖曳
-  const handleEventDrop = async (dropInfo) => {
-    const { event } = dropInfo;
-    console.log("Event dropped:", event);
-    
-    try {
-      const formatDateForInput = (date) => {
-        if (!date) return "";
-        const d = new Date(date);
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        const hours = String(d.getHours()).padStart(2, '0');
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
-      };
-
-      const eventData = {
-        title: event.title,
-        start_time: formatDateForInput(event.start),
-        end_time: formatDateForInput(event.end),
-        is_all_day: event.allDay
-      };
-      
-      await updateEvent(event.id, eventData);
-      await loadEvents();
-    } catch (error) {
-      console.error("Failed to update event after drop:", error);
     }
   };
 
@@ -326,68 +277,87 @@ export default function CalendarView() {
             fontFamily: "inherit"
           },
           "& .fc-toolbar-title": {
-            fontSize: "1.2rem !important"
+            fontSize: "1.2rem !important",
+            fontWeight: "bold"
           },
           "& .fc-button": {
             borderRadius: "8px !important",
-            textTransform: "none !important",
-            fontWeight: "600 !important"
+            textTransform: "none !important"
           },
           "& .fc-event": {
-            borderRadius: "6px !important",
+            borderRadius: "4px !important",
             border: "none !important"
-          },
-          "& .fc-event-main": {
-            padding: "2px 4px !important"
           }
         }}>
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-            initialView="dayGridMonth"
+          <FullCalendar 
+            plugins={[dayGridPlugin]} 
+            initialView="dayGridMonth" 
+            events={events}
+            height="auto"
             headerToolbar={{
               left: "prev,next today",
               center: "title",
-              right: "dayGridMonth,timeGridWeek,timeGridDay"
+              right: "dayGridMonth,dayGridWeek"
             }}
             locale="zh-tw"
-            events={events}
+            buttonText={{
+              today: "今天",
+              month: "月",
+              week: "週"
+            }}
             eventClick={handleEventClick}
-            eventDrop={handleEventDrop}
             editable={true}
             selectable={true}
-            selectMirror={true}
-            dayMaxEvents={true}
-            weekends={true}
-            eventTimeFormat={{
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: false
-            }}
-            slotLabelFormat={{
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: false
-            }}
-            eventDisplay="block"
             timeZone="local"
+                    eventTimeFormat={{
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }}
+        slotLabelFormat={{
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        }}
           />
         </Box>
 
-        {/* 事件對話框 */}
-        <Dialog 
-          open={openDialog} 
-          onClose={handleCloseDialog}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle>
-            {editingEvent ? "編輯事件" : "新增事件"}
+        {/* 新增/編輯事件對話框 */}
+        <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+          <DialogTitle sx={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: 1,
+            color: "primary.main"
+          }}>
+            <ScheduleIcon color="primary" />
+            {editingEvent ? "編輯行事曆事件" : "新增行事曆事件"}
           </DialogTitle>
           <DialogContent>
+            {/* 調試信息 - 顯示時間解析過程 */}
+            {process.env.NODE_ENV === 'development' && (
+              <Box sx={{ mb: 2, p: 1, bgcolor: 'grey.100', borderRadius: 1, fontSize: '0.75rem' }}>
+                <Typography variant="caption" color="text.secondary">
+                  🐛 調試信息：
+                </Typography>
+                <Box sx={{ mt: 1 }}>
+                  <div>開始時間: {editingEvent ? editingEvent.start_time : newEvent.start_time}</div>
+                  <div>結束時間: {editingEvent ? editingEvent.end_time : newEvent.end_time}</div>
+                  {editingEvent && (
+                    <>
+                      <div>解析後開始: {parseLocalTime(editingEvent.start_time)?.toLocaleString('zh-TW')}</div>
+                      <div>解析後結束: {parseLocalTime(editingEvent.end_time)?.toLocaleString('zh-TW')}</div>
+                    </>
+                  )}
+                </Box>
+              </Box>
+            )}
+            
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
               <TextField
+                fullWidth
                 label="事件標題"
-                value={editingEvent?.title || newEvent.title}
+                value={editingEvent ? editingEvent.title : newEvent.title}
                 onChange={(e) => {
                   if (editingEvent) {
                     setEditingEvent({ ...editingEvent, title: e.target.value });
@@ -395,159 +365,242 @@ export default function CalendarView() {
                     setNewEvent({ ...newEvent, title: e.target.value });
                   }
                 }}
-                fullWidth
-                required
+                variant="outlined"
               />
-              
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={editingEvent?.is_all_day || newEvent.is_all_day}
-                    onChange={(e) => {
-                      if (editingEvent) {
-                        setEditingEvent({ ...editingEvent, is_all_day: e.target.checked });
-                      } else {
-                        setNewEvent({ ...newEvent, is_all_day: e.target.checked });
-                      }
-                    }}
-                    icon={<AllDayIcon />}
-                    checkedIcon={<AllDayIcon />}
-                  />
-                }
-                label="整天事件"
-              />
-
-              {!(editingEvent?.is_all_day || newEvent.is_all_day) && (
-                <>
-                  <TextField
-                    label="開始時間"
-                    type="datetime-local"
-                    value={editingEvent?.start_time || newEvent.start_time}
-                    onChange={(e) => {
-                      if (editingEvent) {
-                        setEditingEvent({ ...editingEvent, start_time: e.target.value });
-                      } else {
-                        setNewEvent({ ...newEvent, start_time: e.target.value });
-                      }
-                    }}
-                    fullWidth
-                    required
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  
-                  <TextField
-                    label="結束時間"
-                    type="datetime-local"
-                    value={editingEvent?.end_time || newEvent.end_time}
-                    onChange={(e) => {
-                      if (editingEvent) {
-                        setEditingEvent({ ...editingEvent, end_time: e.target.value });
-                      } else {
-                        setNewEvent({ ...newEvent, end_time: e.target.value });
-                      }
-                    }}
-                    fullWidth
-                    required
-                    InputLabelProps={{ shrink: true }}
-                  />
-                </>
-              )}
-
-              {(editingEvent?.is_all_day || newEvent.is_all_day) && (
-                <>
-                  <TextField
-                    label="開始日期"
-                    type="date"
-                    value={editingEvent?.start_time?.split('T')[0] || newEvent.start_time?.split('T')[0] || ""}
-                    onChange={(e) => {
-                      const dateValue = e.target.value;
-                      if (editingEvent) {
-                        setEditingEvent({ ...editingEvent, start_time: dateValue });
-                      } else {
-                        setNewEvent({ ...newEvent, start_time: dateValue });
-                      }
-                    }}
-                    fullWidth
-                    required
-                    InputLabelProps={{ shrink: true }}
-                  />
-                  
-                  <TextField
-                    label="結束日期"
-                    type="date"
-                    value={editingEvent?.end_time?.split('T')[0] || newEvent.end_time?.split('T')[0] || ""}
-                    onChange={(e) => {
-                      const dateValue = e.target.value;
-                      if (editingEvent) {
-                        setEditingEvent({ ...editingEvent, end_time: dateValue });
-                      } else {
-                        setNewEvent({ ...newEvent, end_time: dateValue });
-                      }
-                    }}
-                    fullWidth
-                    required
-                    InputLabelProps={{ shrink: true }}
-                  />
-                </>
-              )}
-
-              <FormControl fullWidth>
-                <InputLabel>重複</InputLabel>
-                <Select
-                  value={editingEvent?.repeat_type || newEvent.repeat_type}
-                  onChange={(e) => {
-                    if (editingEvent) {
-                      setEditingEvent({ ...editingEvent, repeat_type: e.target.value });
-                    } else {
-                      setNewEvent({ ...newEvent, repeat_type: e.target.value });
-                    }
-                  }}
-                  label="重複"
-                >
-                  <MenuItem value="">不重複</MenuItem>
-                  <MenuItem value="daily">每日</MenuItem>
-                  <MenuItem value="weekly">每週</MenuItem>
-                  <MenuItem value="monthly">每月</MenuItem>
-                  <MenuItem value="yearly">每年</MenuItem>
-                </Select>
-              </FormControl>
-
-              {(editingEvent?.repeat_type || newEvent.repeat_type) && (
+              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                 <TextField
-                  label="重複直到"
-                  type="date"
-                  value={editingEvent?.repeat_until || newEvent.repeat_until}
+                  fullWidth
+                  label="開始時間"
+                  type="datetime-local"
+                  value={editingEvent ? editingEvent.start_time : newEvent.start_time}
                   onChange={(e) => {
                     if (editingEvent) {
-                      setEditingEvent({ ...editingEvent, repeat_until: e.target.value });
+                      setEditingEvent({ ...editingEvent, start_time: e.target.value });
                     } else {
-                      setNewEvent({ ...newEvent, repeat_until: e.target.value });
+                      setNewEvent({ ...newEvent, start_time: e.target.value });
                     }
                   }}
-                  fullWidth
+                  variant="outlined"
                   InputLabelProps={{ shrink: true }}
                 />
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => {
+                    const now = new Date();
+                    // 格式化為本地時間（UTC+8）
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const formattedNow = `${year}-${month}-${day}T${hours}:${minutes}`;
+                    
+                    console.log("設定現在時間:", formattedNow);
+                    
+                    if (editingEvent) {
+                      setEditingEvent({ ...editingEvent, start_time: formattedNow });
+                    } else {
+                      setNewEvent({ ...newEvent, start_time: formattedNow });
+                    }
+                  }}
+                  sx={{ minWidth: "auto", px: 1 }}
+                >
+                  現在
+                </Button>
+              </Box>
+              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                <TextField
+                  fullWidth
+                  label="結束時間"
+                  type="datetime-local"
+                  value={editingEvent ? editingEvent.end_time : newEvent.end_time}
+                  onChange={(e) => {
+                    if (editingEvent) {
+                      setEditingEvent({ ...editingEvent, end_time: e.target.value });
+                    } else {
+                      setNewEvent({ ...newEvent, end_time: e.target.value });
+                    }
+                  }}
+                  variant="outlined"
+                  InputLabelProps={{ shrink: true }}
+                />
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={() => {
+                    const now = new Date();
+                    // 格式化為本地時間（UTC+8）
+                    const year = now.getFullYear();
+                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                    const day = String(now.getDate()).padStart(2, '0');
+                    const hours = String(now.getHours()).padStart(2, '0');
+                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    const formattedNow = `${year}-${month}-${day}T${hours}:${minutes}`;
+                    
+                    console.log("設定現在時間:", formattedNow);
+                    
+                    if (editingEvent) {
+                      setEditingEvent({ ...editingEvent, end_time: formattedNow });
+                    } else {
+                      setNewEvent({ ...newEvent, end_time: formattedNow });
+                    }
+                  }}
+                  sx={{ minWidth: "auto", px: 1 }}
+                >
+                  現在
+                </Button>
+              </Box>
+              
+              {/* 時間驗證提示 */}
+              {((editingEvent && editingEvent.start_time && editingEvent.end_time) || 
+                (newEvent.start_time && newEvent.end_time)) && (
+                <Box sx={{ mt: 1 }}>
+                  {(() => {
+                    const startTime = editingEvent ? editingEvent.start_time : newEvent.start_time;
+                    const endTime = editingEvent ? editingEvent.end_time : newEvent.end_time;
+                    if (startTime && endTime) {
+                      const start = new Date(startTime);
+                      const end = new Date(endTime);
+                      if (end <= start) {
+                        return (
+                          <Typography variant="caption" color="error" sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                            ⚠️ 結束時間必須晚於開始時間
+                          </Typography>
+                        );
+                      }
+                    }
+                    return null;
+                  })()}
+                </Box>
               )}
+              
+              {/* 快速時間設定 */}
+              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                <Typography variant="caption" color="text.secondary" sx={{ width: "100%", mb: 1 }}>
+                  快速設定時長：
+                </Typography>
+                {[
+                                  { label: "30分鐘", minutes: 30 },
+                { label: "1小時", minutes: 60 },
+                { label: "2小時", minutes: 120 },
+                { label: "4小時", minutes: 240 },
+                { label: "6小時", minutes: 360 },
+                { label: "12小時", minutes: 720 }
+                ].map((option) => (
+                  <Button
+                    key={option.minutes}
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      const startTime = editingEvent ? editingEvent.start_time : newEvent.start_time;
+                      if (startTime) {
+                        try {
+                          // 解析開始時間
+                          const start = new Date(startTime);
+                          if (isNaN(start.getTime())) {
+                            console.error("無效的開始時間:", startTime);
+                            return;
+                          }
+                          
+                          // 直接計算結束時間（避免時區問題）
+                          const endMinutes = start.getMinutes() + option.minutes;
+                          const endHours = start.getHours() + Math.floor(endMinutes / 60);
+                          const finalMinutes = endMinutes % 60;
+                          
+                          // 處理日期變化（如果小時超過24）
+                          let endDate = new Date(start);
+                          if (endHours >= 24) {
+                            endDate.setDate(endDate.getDate() + Math.floor(endHours / 24));
+                            endDate.setHours(endHours % 24);
+                          } else {
+                            endDate.setHours(endHours);
+                          }
+                          endDate.setMinutes(finalMinutes);
+                          endDate.setSeconds(0);
+                          endDate.setMilliseconds(0);
+                          
+                          // 格式化為本地時間
+                          const year = endDate.getFullYear();
+                          const month = String(endDate.getMonth() + 1).padStart(2, '0');
+                          const day = String(endDate.getDate()).padStart(2, '0');
+                          const hours = String(endDate.getHours()).padStart(2, '0');
+                          const minutes = String(endDate.getMinutes()).padStart(2, '0');
+                          const formattedEnd = `${year}-${month}-${day}T${hours}:${minutes}`;
+                          
+                          console.log(`設定時長: ${option.label}`);
+                          console.log(`  開始時間: ${startTime}`);
+                          console.log(`  計算後結束時間: ${formattedEnd}`);
+                          console.log(`  時間差: ${option.minutes} 分鐘`);
+                          
+                          if (editingEvent) {
+                            setEditingEvent({ ...editingEvent, end_time: formattedEnd });
+                          } else {
+                            setNewEvent({ ...newEvent, end_time: formattedEnd });
+                          }
+                        } catch (error) {
+                          console.error("設定時長失敗:", error);
+                        }
+                      } else {
+                        console.log("請先設定開始時間");
+                      }
+                    }}
+                    sx={{ fontSize: "0.75rem", px: 1 }}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </Box>
             </Box>
           </DialogContent>
-          <DialogActions>
+          <DialogActions sx={{ p: 2, gap: 1 }}>
             {editingEvent && (
               <Button 
                 onClick={handleDeleteEvent} 
+                variant="outlined"
                 color="error"
-                startIcon={<DeleteIcon />}
+                sx={{ mr: "auto" }}
               >
                 刪除
               </Button>
             )}
-            <Button onClick={handleCloseDialog}>取消</Button>
-            <Button 
-              onClick={editingEvent ? handleEditEvent : handleAddEvent} 
-              variant="contained"
-              startIcon={editingEvent ? <EditIcon /> : <AddIcon />}
-            >
-              {editingEvent ? "更新" : "新增"}
+            <Button onClick={handleCloseDialog} variant="outlined">
+              取消
             </Button>
+            {editingEvent ? (
+              <Button 
+                onClick={handleEditEvent} 
+                variant="contained"
+                disabled={
+                  !editingEvent.title || 
+                  !editingEvent.start_time || 
+                  !editingEvent.end_time
+                }
+                sx={{ 
+                  minWidth: 80,
+                  fontWeight: "bold"
+                }}
+              >
+                ✓ 更新
+              </Button>
+            ) : (
+              <Button 
+                onClick={handleAddEvent} 
+                variant="contained"
+                disabled={
+                  !newEvent.title || 
+                  !newEvent.start_time || 
+                  !newEvent.end_time ||
+                  new Date(newEvent.end_time) <= new Date(newEvent.start_time)
+                }
+                sx={{ 
+                  minWidth: 80,
+                  fontWeight: "bold"
+                }}
+              >
+                ✓ 新增
+              </Button>
+            )}
           </DialogActions>
         </Dialog>
       </CardContent>
