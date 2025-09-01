@@ -13,7 +13,11 @@ class EventRepository {
           to_char(start_time, 'YYYY-MM-DD HH24:MI:SS') as start_time,
           to_char(end_time, 'YYYY-MM-DD HH24:MI:SS') as end_time,
           to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
-          to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at
+          to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at,
+          is_all_day,
+          repeat_type,
+          to_char(repeat_until, 'YYYY-MM-DD') as repeat_until,
+          original_event_id
         FROM calendar_events 
         ORDER BY start_time ASC
       `;
@@ -35,7 +39,11 @@ class EventRepository {
           to_char(start_time, 'YYYY-MM-DD HH24:MI:SS') as start_time,
           to_char(end_time, 'YYYY-MM-DD HH24:MI:SS') as end_time,
           to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
-          to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at
+          to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at,
+          is_all_day,
+          repeat_type,
+          to_char(repeat_until, 'YYYY-MM-DD') as repeat_until,
+          original_event_id
         FROM calendar_events 
         WHERE id = $1
       `;
@@ -56,11 +64,19 @@ class EventRepository {
   async create(eventData) {
     try {
       const query = `
-        INSERT INTO calendar_events (title, start_time, end_time) 
-        VALUES ($1, $2, $3) 
+        INSERT INTO calendar_events (title, start_time, end_time, is_all_day, repeat_type, repeat_until, original_event_id) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7) 
         RETURNING *
       `;
-      const values = [eventData.title, eventData.start_time, eventData.end_time];
+      const values = [
+        eventData.title, 
+        eventData.start_time, 
+        eventData.end_time,
+        eventData.is_all_day || false,
+        eventData.repeat_type || null,
+        eventData.repeat_until || null,
+        eventData.original_event_id || null
+      ];
       const result = await pool.query(query, values);
       
       return Event.create(result.rows[0]);
@@ -83,11 +99,21 @@ class EventRepository {
       
       const query = `
         UPDATE calendar_events 
-        SET title = $1, start_time = $2, end_time = $3, updated_at = NOW()
-        WHERE id = $4 
+        SET title = $1, start_time = $2, end_time = $3, is_all_day = $4, 
+            repeat_type = $5, repeat_until = $6, original_event_id = $7, updated_at = NOW()
+        WHERE id = $8 
         RETURNING *
       `;
-      const values = [event.title, event.start_time, event.end_time, id];
+      const values = [
+        event.title, 
+        event.start_time, 
+        event.end_time, 
+        event.is_all_day,
+        event.repeat_type,
+        event.repeat_until,
+        event.original_event_id,
+        id
+      ];
       const result = await pool.query(query, values);
       
       return Event.create(result.rows[0]);
