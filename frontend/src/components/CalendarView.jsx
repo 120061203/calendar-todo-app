@@ -17,7 +17,9 @@ import {
   Select,
   MenuItem,
   IconButton,
-  Tooltip
+  Tooltip,
+  FormControlLabel,
+  Checkbox
 } from "@mui/material";
 import { 
   Event as EventIcon,
@@ -26,26 +28,6 @@ import {
   CheckBox as CheckBoxIcon,
   CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon
 } from "@mui/icons-material";
-import { 
-  Box, 
-  Card, 
-  CardContent, 
-  Typography, 
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  IconButton,
-  Tooltip,
-  FormControlLabel,
-  Checkbox
-} from "@mui/material";
 import { getEvents, addEvent, updateEvent, deleteEvent } from "../api";
 
 export default function CalendarView() {
@@ -140,7 +122,8 @@ export default function CalendarView() {
           id: e.id,
           title: e.title,
           start: start,
-          end: end
+          end: end,
+          allDay: e.is_all_day || false
         };
       });
       
@@ -151,14 +134,15 @@ export default function CalendarView() {
   };
 
   const handleAddEvent = async () => {
-    if (!newEvent.title || !newEvent.start_time || !newEvent.end_time) return;
+    if (!newEvent.title || (!newEvent.is_all_day && (!newEvent.start_time || !newEvent.end_time))) return;
     
     try {
       // 確保時間以本地時間格式發送，不進行時區轉換
       const eventData = {
         title: newEvent.title,
         start_time: newEvent.start_time,
-        end_time: newEvent.end_time
+        end_time: newEvent.end_time,
+        is_all_day: newEvent.is_all_day
       };
       
       console.log("發送事件數據:", eventData);
@@ -170,14 +154,15 @@ export default function CalendarView() {
         id: res.data.id,
         title: res.data.title,
         start: handleProductionTimezone(res.data.start_time),
-        end: handleProductionTimezone(res.data.end_time)
+        end: handleProductionTimezone(res.data.end_time),
+        allDay: res.data.is_all_day || false
       };
       
       console.log("格式化後的事件:", formattedEvent);
       
       // 重新載入所有事件，確保時區處理一致
       await loadEvents();
-      setNewEvent({ title: "", start_time: "", end_time: "" });
+      setNewEvent({ title: "", start_time: "", end_time: "", is_all_day: false });
       setOpenDialog(false);
     } catch (error) {
       console.error("Failed to add event:", error);
@@ -187,7 +172,7 @@ export default function CalendarView() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setEditingEvent(null);
-    setNewEvent({ title: "", start_time: "", end_time: "" });
+    setNewEvent({ title: "", start_time: "", end_time: "", is_all_day: false });
   };
 
   const handleEventClick = (clickInfo) => {
@@ -209,7 +194,8 @@ export default function CalendarView() {
       id: clickInfo.event.id,
       title: clickInfo.event.title,
       start_time: formatDateForInput(clickInfo.event.start),
-      end_time: formatDateForInput(clickInfo.event.end)
+      end_time: formatDateForInput(clickInfo.event.end),
+      is_all_day: clickInfo.event.allDay
     });
     setOpenDialog(true);
   };
@@ -218,7 +204,7 @@ export default function CalendarView() {
     console.log("開始更新事件...");
     console.log("編輯事件數據:", editingEvent);
     
-    if (!editingEvent.title || !editingEvent.start_time || !editingEvent.end_time) {
+    if (!editingEvent.title || (!editingEvent.is_all_day && (!editingEvent.start_time || !editingEvent.end_time))) {
       console.error("缺少必要字段:", {
         title: editingEvent.title,
         start_time: editingEvent.start_time,
@@ -232,7 +218,8 @@ export default function CalendarView() {
       const eventData = {
         title: editingEvent.title,
         start_time: editingEvent.start_time,
-        end_time: editingEvent.end_time
+        end_time: editingEvent.end_time,
+        is_all_day: editingEvent.is_all_day
       };
       
       console.log("更新事件數據:", eventData);
@@ -407,7 +394,10 @@ export default function CalendarView() {
                 }
                 label="整天事件"
               />
-              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+              
+              {!(editingEvent ? editingEvent.is_all_day : newEvent.is_all_day) && (
+                <>
+                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                 <TextField
                   fullWidth
                   label="開始時間"
@@ -591,6 +581,46 @@ export default function CalendarView() {
                   </Button>
                 ))}
               </Box>
+                </>
+              )}
+              
+              {(editingEvent ? editingEvent.is_all_day : newEvent.is_all_day) && (
+                <>
+                  <TextField
+                    fullWidth
+                    label="開始日期"
+                    type="date"
+                    value={editingEvent ? editingEvent.start_time?.split('T')[0] : newEvent.start_time?.split('T')[0] || ""}
+                    onChange={(e) => {
+                      const dateValue = e.target.value;
+                      if (editingEvent) {
+                        setEditingEvent({ ...editingEvent, start_time: dateValue });
+                      } else {
+                        setNewEvent({ ...newEvent, start_time: dateValue });
+                      }
+                    }}
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}
+                  />
+                  
+                  <TextField
+                    fullWidth
+                    label="結束日期"
+                    type="date"
+                    value={editingEvent ? editingEvent.end_time?.split('T')[0] : newEvent.end_time?.split('T')[0] || ""}
+                    onChange={(e) => {
+                      const dateValue = e.target.value;
+                      if (editingEvent) {
+                        setEditingEvent({ ...editingEvent, end_time: dateValue });
+                      } else {
+                        setNewEvent({ ...newEvent, end_time: dateValue });
+                      }
+                    }}
+                    variant="outlined"
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </>
+              )}
             </Box>
           </DialogContent>
           <DialogActions sx={{ p: 2, gap: 1 }}>
@@ -613,8 +643,7 @@ export default function CalendarView() {
                 variant="contained"
                 disabled={
                   !editingEvent.title || 
-                  !editingEvent.start_time || 
-                  !editingEvent.end_time
+                  (!editingEvent.is_all_day && (!editingEvent.start_time || !editingEvent.end_time))
                 }
                 sx={{ 
                   minWidth: 80,
@@ -629,9 +658,8 @@ export default function CalendarView() {
                 variant="contained"
                 disabled={
                   !newEvent.title || 
-                  !newEvent.start_time || 
-                  !newEvent.end_time ||
-                  new Date(newEvent.end_time) <= new Date(newEvent.start_time)
+                  (!newEvent.is_all_day && (!newEvent.start_time || !newEvent.end_time)) ||
+                  (!newEvent.is_all_day && new Date(newEvent.end_time) <= new Date(newEvent.start_time))
                 }
                 sx={{ 
                   minWidth: 80,
