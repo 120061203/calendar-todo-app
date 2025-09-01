@@ -7,7 +7,14 @@ class EventRepository {
   async findAll() {
     try {
       const query = `
-        SELECT * FROM calendar_events 
+        SELECT 
+          id,
+          title,
+          to_char(start_time, 'YYYY-MM-DD HH24:MI:SS') as start_time,
+          to_char(end_time, 'YYYY-MM-DD HH24:MI:SS') as end_time,
+          to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
+          to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at
+        FROM calendar_events 
         ORDER BY start_time ASC
       `;
       const result = await pool.query(query);
@@ -21,7 +28,17 @@ class EventRepository {
   // 根據 ID 獲取事件
   async findById(id) {
     try {
-      const query = 'SELECT * FROM calendar_events WHERE id = $1';
+      const query = `
+        SELECT 
+          id,
+          title,
+          to_char(start_time, 'YYYY-MM-DD HH24:MI:SS') as start_time,
+          to_char(end_time, 'YYYY-MM-DD HH24:MI:SS') as end_time,
+          to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
+          to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at
+        FROM calendar_events 
+        WHERE id = $1
+      `;
       const result = await pool.query(query, [id]);
       
       if (result.rows.length === 0) {
