@@ -102,6 +102,30 @@ export default function CalendarView() {
     return null;
   };
 
+  // 生產環境專用：處理 Supabase 時區問題
+  const handleProductionTimezone = (timeString) => {
+    if (!timeString) return null;
+    
+    // 檢查是否在生產環境
+    const isProduction = import.meta.env.PROD;
+    
+    if (isProduction) {
+      console.log('生產環境時區處理:', timeString);
+      
+      // 如果是 UTC 格式 (結尾有 Z)，需要轉換為本地時間
+      if (timeString.endsWith('Z')) {
+        const utcDate = new Date(timeString);
+        // 強制轉換為本地時間 (UTC+8)
+        const localDate = new Date(utcDate.getTime() + (8 * 60 * 60 * 1000));
+        console.log(`UTC 轉本地: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
+        return localDate;
+      }
+    }
+    
+    // 非生產環境或非 UTC 格式，使用原有邏輯
+    return forceLocalTime(timeString);
+  };
+
   const loadEvents = async () => {
     try {
       const res = await getEvents();
@@ -109,8 +133,8 @@ export default function CalendarView() {
       // 修復：使用強制本地時間函數，避免時區轉換
       const formattedEvents = res.data.map(e => {
         // 使用強制本地時間函數
-        const start = forceLocalTime(e.start_time);
-        const end = forceLocalTime(e.end_time);
+        const start = handleProductionTimezone(e.start_time);
+        const end = handleProductionTimezone(e.end_time);
         
         return {
           id: e.id,

@@ -423,3 +423,29 @@ Error: Failed to fetch todos
 2025-08-31 23:35:29 [INFO]: Successfully fetched 2 todos
 2025-08-31 23:35:34 [INFO]: Fetching all events
 2025-08-31 23:35:34 [INFO]: Successfully fetched 2 events
+2025-09-01 08:24:27 [INFO]: Creating new event: {"title":"發發發發"}
+2025-09-01 08:24:27 [ERROR]: EventRepository.checkTimeConflict error: The server does not support SSL connections
+Error: The server does not support SSL connections
+    at /Users/songlin.chen/Documents/calendar-todo-app/backend/node_modules/pg-pool/index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async EventRepository.checkTimeConflict (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/EventRepository.js:130:22)
+    at async EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:53:27)
+    at async EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:21)
+2025-09-01 08:24:27 [ERROR]: EventService.createEvent error: Failed to check time conflict
+Error: Failed to check time conflict
+    at EventRepository.checkTimeConflict (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/EventRepository.js:134:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:53:27)
+    at async EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:21)
+2025-09-01 08:24:27 [ERROR]: EventController.createEvent error: Failed to check time conflict
+Error: Failed to check time conflict
+    at EventRepository.checkTimeConflict (/Users/songlin.chen/Documents/calendar-todo-app/backend/repositories/EventRepository.js:134:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async EventService.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/services/EventService.js:53:27)
+    at async EventController.createEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:46:21)
+2025-09-01 08:29:52 [INFO]: Fetching all todos
+2025-09-01 08:29:52 [INFO]: Successfully fetched 5 todos
+2025-09-01 08:29:56 [INFO]: Fetching all events
+2025-09-01 08:29:56 [INFO]: Successfully fetched 5 events
+2025-09-01 08:29:59 [INFO]: Creating new event: {"title":"發發發發"}
+2025-09-01 08:29:59 [INFO]: Successfully created event with id: 8
