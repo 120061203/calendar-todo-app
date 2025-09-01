@@ -103,8 +103,15 @@ export default function CalendarView() {
 
   // 修復：強制本地時間解析，避免時區轉換
   // 統一時區處理：直接使用資料庫時間
-  const handleProductionTimezone = (timeString) => {
+  const handleProductionTimezone = (timeString, isAllDay = false) => {
     if (!timeString) return null;
+    
+    if (isAllDay) {
+      // 整天事件只返回日期，不包含時間
+      const date = new Date(timeString);
+      return date;
+    }
+    
     return parseLocalTime(timeString);
   };
 
@@ -114,16 +121,18 @@ export default function CalendarView() {
       
       // 修復：直接使用資料庫時間，不進行時區轉換
       const formattedEvents = res.data.map(e => {
-        // 直接解析本地時間格式
-        const start = parseLocalTime(e.start_time);
-        const end = parseLocalTime(e.end_time);
+        const isAllDay = e.is_all_day || false;
+        
+        // 整天事件和普通事件使用不同的解析方式
+        const start = isAllDay ? new Date(e.start_time) : parseLocalTime(e.start_time);
+        const end = isAllDay ? new Date(e.end_time) : parseLocalTime(e.end_time);
         
         return {
           id: e.id,
           title: e.title,
           start: start,
           end: end,
-          allDay: e.is_all_day || false
+          allDay: isAllDay
         };
       });
       
@@ -153,8 +162,8 @@ export default function CalendarView() {
       const formattedEvent = {
         id: res.data.id,
         title: res.data.title,
-        start: handleProductionTimezone(res.data.start_time),
-        end: handleProductionTimezone(res.data.end_time),
+        start: handleProductionTimezone(res.data.start_time, res.data.is_all_day),
+        end: handleProductionTimezone(res.data.end_time, res.data.is_all_day),
         allDay: res.data.is_all_day || false
       };
       
@@ -178,23 +187,28 @@ export default function CalendarView() {
   const handleEventClick = (clickInfo) => {
     console.log("Event clicked:", clickInfo.event);
     
-    // 格式化日期為 YYYY-MM-DDTHH:mm 格式
-    const formatDateForInput = (date) => {
+    // 格式化日期為 YYYY-MM-DDTHH:mm 格式（非整天事件）或 YYYY-MM-DD 格式（整天事件）
+    const formatDateForInput = (date, isAllDay = false) => {
       if (!date) return "";
       const d = new Date(date);
       const year = d.getFullYear();
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
-      const hours = String(d.getHours()).padStart(2, '0');
-      const minutes = String(d.getMinutes()).padStart(2, '0');
-      return `${year}-${month}-${day}T${hours}:${minutes}`;
+      
+      if (isAllDay) {
+        return `${year}-${month}-${day}`;
+      } else {
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+      }
     };
     
     setEditingEvent({
       id: clickInfo.event.id,
       title: clickInfo.event.title,
-      start_time: formatDateForInput(clickInfo.event.start),
-      end_time: formatDateForInput(clickInfo.event.end),
+      start_time: formatDateForInput(clickInfo.event.start, clickInfo.event.allDay),
+      end_time: formatDateForInput(clickInfo.event.end, clickInfo.event.allDay),
       is_all_day: clickInfo.event.allDay
     });
     setOpenDialog(true);
@@ -607,13 +621,40 @@ export default function CalendarView() {
                     fullWidth
                     label="結束日期"
                     type="date"
-                    value={editingEvent ? editingEvent.end_time?.split('T')[0] : newEvent.end_time?.split('T')[0] || ""}
+                    value={(() => {
+                      const endTime = editingEvent ? editingEvent.end_time : newEvent.end_time;
+                      if (!endTime) return "";
+                      
+                      // 整天事件的結束日期需要減一天來顯示，因為我們在保存時加了一天
+                      if (endTime.includes('T')) {
+                        // 有時間部分，直接分割
+                        return endTime.split('T')[0];
+                      } else {
+                        // 只有日期部分，需要減一天
+                        const endDate = new Date(endTime);
+                        endDate.setDate(endDate.getDate() - 1);
+                        return endDate.toISOString().split('T')[0];
+                      }
+                    })()}
                     onChange={(e) => {
                       const dateValue = e.target.value;
-                      if (editingEvent) {
-                        setEditingEvent({ ...editingEvent, end_time: dateValue });
+                      // 整天事件的結束日期需要加一天，因為整天事件是包含結束日期的
+                      if (dateValue) {
+                        const endDate = new Date(dateValue);
+                        endDate.setDate(endDate.getDate() + 1);
+                        const adjustedDateValue = endDate.toISOString().split('T')[0];
+                        
+                        if (editingEvent) {
+                          setEditingEvent({ ...editingEvent, end_time: adjustedDateValue });
+                        } else {
+                          setNewEvent({ ...newEvent, end_time: adjustedDateValue });
+                        }
                       } else {
-                        setNewEvent({ ...newEvent, end_time: dateValue });
+                        if (editingEvent) {
+                          setEditingEvent({ ...editingEvent, end_time: dateValue });
+                        } else {
+                          setNewEvent({ ...newEvent, end_time: dateValue });
+                        }
                       }
                     }}
                     variant="outlined"
