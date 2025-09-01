@@ -63,6 +63,16 @@ class EventRepository {
   // 創建事件
   async create(eventData) {
     try {
+      logger.info('Creating event with data:', {
+        title: eventData.title,
+        start_time: eventData.start_time,
+        end_time: eventData.end_time,
+        is_all_day: eventData.is_all_day,
+        repeat_type: eventData.repeat_type,
+        repeat_until: eventData.repeat_until,
+        original_event_id: eventData.original_event_id
+      });
+      
       const query = `
         INSERT INTO calendar_events (title, start_time, end_time, is_all_day, repeat_type, repeat_until, original_event_id) 
         VALUES ($1, $2, $3, $4, $5, $6, $7) 
@@ -77,11 +87,17 @@ class EventRepository {
         eventData.repeat_until || null,
         eventData.original_event_id || null
       ];
+      
+      logger.info('SQL query values:', values);
+      
       const result = await pool.query(query, values);
+      
+      logger.info('Event created successfully:', result.rows[0]);
       
       return Event.create(result.rows[0]);
     } catch (error) {
       logger.error('EventRepository.create error:', error);
+      logger.error('Event data that failed:', eventData);
       throw new Error('Failed to create event');
     }
   }

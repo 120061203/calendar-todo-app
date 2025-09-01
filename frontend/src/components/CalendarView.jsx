@@ -268,7 +268,46 @@ export default function CalendarView() {
       // 確保時間以本地時間格式發送，不進行時區轉換
       // 處理重複次數轉換為結束日期
       let repeatUntil = newEvent.repeat_until;
-      if (newEvent.repeat_type && newEvent.repeat_count && !newEvent.repeat_until) {
+      
+      // 強制檢查：如果有重複類型但沒有結束日期，則使用重複次數計算
+      if (newEvent.repeat_type && !newEvent.repeat_until) {
+        const count = newEvent.repeat_count ? parseInt(newEvent.repeat_count) : 3; // 預設3次
+        console.log(`強制轉換重複次數: ${count} 次, 類型: ${newEvent.repeat_type}`);
+        
+        const startDate = new Date(newEvent.start_time);
+        console.log(`原始開始日期: ${startDate.toLocaleDateString()}`);
+        
+        switch (newEvent.repeat_type) {
+          case 'daily':
+            startDate.setDate(startDate.getDate() + count - 1);
+            break;
+          case 'weekly':
+            startDate.setDate(startDate.getDate() + (count - 1) * 7);
+            break;
+          case 'monthly':
+            // 每月重複：保持相同的日期
+            const targetMonth = new Date(startDate);
+            targetMonth.setMonth(targetMonth.getMonth() + count - 1);
+            
+            // 處理月末日期問題
+            const originalDay = startDate.getDate();
+            const maxDaysInTargetMonth = new Date(targetMonth.getFullYear(), targetMonth.getMonth() + 1, 0).getDate();
+            const adjustedDay = Math.min(originalDay, maxDaysInTargetMonth);
+            
+            targetMonth.setDate(adjustedDay);
+            startDate.setTime(targetMonth.getTime());
+            break;
+          case 'yearly':
+            startDate.setFullYear(startDate.getFullYear() + count - 1);
+            break;
+        }
+        
+        repeatUntil = startDate.toISOString().split('T')[0];
+        console.log(`計算結束日期: ${repeatUntil}`);
+      }
+      
+      // 原有的轉換邏輯（保留作為備用）
+      if (newEvent.repeat_type && newEvent.repeat_count && !repeatUntil) {
         const startDate = new Date(newEvent.start_time);
         const count = parseInt(newEvent.repeat_count);
         
@@ -661,14 +700,14 @@ export default function CalendarView() {
                           ...editingEvent, 
                           repeat_type: e.target.value,
                           repeat_until: "",
-                          repeat_count: ""
+                          repeat_count: e.target.value ? "3" : ""
                         });
                       } else {
                         setNewEvent({ 
                           ...newEvent, 
                           repeat_type: e.target.value,
                           repeat_until: "",
-                          repeat_count: ""
+                          repeat_count: e.target.value ? "3" : ""
                         });
                       }
                     }}
@@ -689,9 +728,9 @@ export default function CalendarView() {
                       <Select
                         value={(() => {
                           const currentEvent = editingEvent || newEvent;
-                          if (currentEvent.repeat_until) return "date";
-                          if (currentEvent.repeat_count) return "count";
-                          return "date"; // 預設為日期
+                          if (currentEvent.repeat_until && !currentEvent.repeat_count) return "date";
+                          if (currentEvent.repeat_count && !currentEvent.repeat_until) return "count";
+                          return "count"; // 預設為重複次數
                         })()}
                         onChange={(e) => {
                           if (e.target.value === "date") {
@@ -719,7 +758,7 @@ export default function CalendarView() {
                               setNewEvent({ 
                                 ...newEvent, 
                                 repeat_until: "",
-                                repeat_count: "5"
+                                repeat_count: "3"
                               });
                             }
                           }
@@ -733,7 +772,7 @@ export default function CalendarView() {
                     
                     {(() => {
                       const currentEvent = editingEvent || newEvent;
-                      const endCondition = currentEvent.repeat_until ? "date" : "count";
+                      const endCondition = (currentEvent.repeat_until && !currentEvent.repeat_count) ? "date" : "count";
                       
                       if (endCondition === "date") {
                         return (

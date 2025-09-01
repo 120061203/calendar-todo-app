@@ -43,7 +43,24 @@ class EventController {
   async createEvent(req, res) {
     try {
       const eventData = req.body;
+      logger.info('EventController.createEvent received data:', {
+        title: eventData.title,
+        start_time: eventData.start_time,
+        end_time: eventData.end_time,
+        is_all_day: eventData.is_all_day,
+        repeat_type: eventData.repeat_type,
+        repeat_until: eventData.repeat_until,
+        original_event_id: eventData.original_event_id
+      });
+      
       const event = await EventService.createEvent(eventData);
+      
+      logger.info('EventController.createEvent result:', {
+        id: event.id,
+        title: event.title,
+        repeat_type: event.repeat_type,
+        repeat_until: event.repeat_until
+      });
       
       res.status(201).json(event);
     } catch (error) {
