@@ -38,7 +38,10 @@ export default function CalendarView() {
     title: "",
     start_time: "",
     end_time: "",
-    is_all_day: false
+    is_all_day: false,
+    repeat_type: "",
+    repeat_until: "",
+    repeat_count: ""
   });
 
   useEffect(() => {
@@ -115,28 +118,114 @@ export default function CalendarView() {
     return parseLocalTime(timeString);
   };
 
+  // 生成重複事件
+  const generateRepeatingEvents = (event) => {
+    if (!event.repeat_type || !event.repeat_until) {
+      return [event];
+    }
+
+    const events = [event];
+    const startDate = new Date(event.start_time);
+    const endDate = new Date(event.end_time);
+    const repeatUntil = new Date(event.repeat_until);
+    
+    let currentStart = new Date(startDate);
+    let currentEnd = new Date(endDate);
+    
+    while (currentStart < repeatUntil) {
+      // 根據重複類型計算下一個日期
+      switch (event.repeat_type) {
+        case 'daily':
+          currentStart.setDate(currentStart.getDate() + 1);
+          currentEnd.setDate(currentEnd.getDate() + 1);
+          break;
+        case 'weekly':
+          currentStart.setDate(currentStart.getDate() + 7);
+          currentEnd.setDate(currentEnd.getDate() + 7);
+          break;
+        case 'monthly':
+          currentStart.setMonth(currentStart.getMonth() + 1);
+          currentEnd.setMonth(currentEnd.getMonth() + 1);
+          break;
+        case 'yearly':
+          currentStart.setFullYear(currentStart.getFullYear() + 1);
+          currentEnd.setFullYear(currentEnd.getFullYear() + 1);
+          break;
+      }
+      
+      if (currentStart <= repeatUntil) {
+        events.push({
+          ...event,
+          id: `${event.id}_${events.length}`,
+          start_time: currentStart.toISOString().split('T')[0] + (event.is_all_day ? '' : 'T' + currentStart.toTimeString().slice(0, 5)),
+          end_time: currentEnd.toISOString().split('T')[0] + (event.is_all_day ? '' : 'T' + currentEnd.toTimeString().slice(0, 5)),
+          original_event_id: event.id
+        });
+      }
+    }
+    
+    return events;
+  };
+
   const loadEvents = async () => {
     try {
       const res = await getEvents();
       
       // 修復：直接使用資料庫時間，不進行時區轉換
-      const formattedEvents = res.data.map(e => {
+      let allEvents = [];
+      
+      res.data.forEach(e => {
         const isAllDay = e.is_all_day || false;
         
         // 整天事件和普通事件使用不同的解析方式
         const start = isAllDay ? new Date(e.start_time) : parseLocalTime(e.start_time);
         const end = isAllDay ? new Date(e.end_time) : parseLocalTime(e.end_time);
         
-        return {
+        const baseEvent = {
           id: e.id,
           title: e.title,
           start: start,
           end: end,
-          allDay: isAllDay
+          allDay: isAllDay,
+          extendedProps: {
+            repeat_type: e.repeat_type,
+            repeat_until: e.repeat_until,
+            original_event_id: e.original_event_id
+          }
         };
+        
+        // 如果是重複事件，生成所有重複實例
+        if (e.repeat_type && e.repeat_until) {
+          const repeatingEvents = generateRepeatingEvents({
+            ...e,
+            start_time: e.start_time,
+            end_time: e.end_time
+          });
+          
+          repeatingEvents.forEach((repeatingEvent, index) => {
+            const isAllDayRepeating = repeatingEvent.is_all_day || false;
+            const startRepeating = isAllDayRepeating ? new Date(repeatingEvent.start_time) : parseLocalTime(repeatingEvent.start_time);
+            const endRepeating = isAllDayRepeating ? new Date(repeatingEvent.end_time) : parseLocalTime(repeatingEvent.end_time);
+            
+            allEvents.push({
+              id: repeatingEvent.id,
+              title: repeatingEvent.title,
+              start: startRepeating,
+              end: endRepeating,
+              allDay: isAllDayRepeating,
+              extendedProps: {
+                repeat_type: repeatingEvent.repeat_type,
+                repeat_until: repeatingEvent.repeat_until,
+                original_event_id: repeatingEvent.original_event_id
+              }
+            });
+          });
+        } else {
+          allEvents.push(baseEvent);
+        }
       });
       
-      setEvents(formattedEvents);
+      setEvents(allEvents);
     } catch (error) {
       console.error("Failed to load events:", error);
     }
@@ -151,7 +240,10 @@ export default function CalendarView() {
         title: newEvent.title,
         start_time: newEvent.start_time,
         end_time: newEvent.end_time,
-        is_all_day: newEvent.is_all_day
+        is_all_day: newEvent.is_all_day,
+        repeat_type: newEvent.repeat_type || null,
+        repeat_until: newEvent.repeat_until || null,
+        original_event_id: null
       };
       
       console.log("發送事件數據:", eventData);
@@ -171,7 +263,7 @@ export default function CalendarView() {
       
       // 重新載入所有事件，確保時區處理一致
       await loadEvents();
-      setNewEvent({ title: "", start_time: "", end_time: "", is_all_day: false });
+      setNewEvent({ title: "", start_time: "", end_time: "", is_all_day: false, repeat_type: "", repeat_until: "", repeat_count: "" });
       setOpenDialog(false);
     } catch (error) {
       console.error("Failed to add event:", error);
@@ -181,7 +273,7 @@ export default function CalendarView() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setEditingEvent(null);
-    setNewEvent({ title: "", start_time: "", end_time: "", is_all_day: false });
+    setNewEvent({ title: "", start_time: "", end_time: "", is_all_day: false, repeat_type: "", repeat_until: "", repeat_count: "" });
   };
 
   const handleEventClick = (clickInfo) => {
@@ -209,7 +301,10 @@ export default function CalendarView() {
       title: clickInfo.event.title,
       start_time: formatDateForInput(clickInfo.event.start, clickInfo.event.allDay),
       end_time: formatDateForInput(clickInfo.event.end, clickInfo.event.allDay),
-      is_all_day: clickInfo.event.allDay
+      is_all_day: clickInfo.event.allDay,
+      repeat_type: clickInfo.event.extendedProps?.repeat_type || "",
+      repeat_until: clickInfo.event.extendedProps?.repeat_until || "",
+      original_event_id: clickInfo.event.extendedProps?.original_event_id || null
     });
     setOpenDialog(true);
   };
@@ -233,7 +328,10 @@ export default function CalendarView() {
         title: editingEvent.title,
         start_time: editingEvent.start_time,
         end_time: editingEvent.end_time,
-        is_all_day: editingEvent.is_all_day
+        is_all_day: editingEvent.is_all_day,
+        repeat_type: editingEvent.repeat_type || null,
+        repeat_until: editingEvent.repeat_until || null,
+        original_event_id: editingEvent.original_event_id || null
       };
       
       console.log("更新事件數據:", eventData);
@@ -408,6 +506,99 @@ export default function CalendarView() {
                 }
                 label="整天事件"
               />
+              
+              {/* 重複事件設定 */}
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  重複設定
+                </Typography>
+                
+                <FormControl fullWidth size="small">
+                  <InputLabel>重複類型</InputLabel>
+                  <Select
+                    value={editingEvent ? editingEvent.repeat_type : newEvent.repeat_type}
+                    onChange={(e) => {
+                      if (editingEvent) {
+                        setEditingEvent({ ...editingEvent, repeat_type: e.target.value });
+                      } else {
+                        setNewEvent({ ...newEvent, repeat_type: e.target.value });
+                      }
+                    }}
+                    label="重複類型"
+                  >
+                    <MenuItem value="">不重複</MenuItem>
+                    <MenuItem value="daily">每日</MenuItem>
+                    <MenuItem value="weekly">每週</MenuItem>
+                    <MenuItem value="monthly">每月</MenuItem>
+                    <MenuItem value="yearly">每年</MenuItem>
+                  </Select>
+                </FormControl>
+                
+                {(editingEvent ? editingEvent.repeat_type : newEvent.repeat_type) && (
+                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel>結束條件</InputLabel>
+                      <Select
+                        value={editingEvent ? (editingEvent.repeat_until ? "date" : "count") : (newEvent.repeat_until ? "date" : "count")}
+                        onChange={(e) => {
+                          if (e.target.value === "date") {
+                            if (editingEvent) {
+                              setEditingEvent({ ...editingEvent, repeat_until: "", repeat_count: "" });
+                            } else {
+                              setNewEvent({ ...newEvent, repeat_until: "", repeat_count: "" });
+                            }
+                          } else {
+                            if (editingEvent) {
+                              setEditingEvent({ ...editingEvent, repeat_until: "", repeat_count: "5" });
+                            } else {
+                              setNewEvent({ ...newEvent, repeat_until: "", repeat_count: "5" });
+                            }
+                          }
+                        }}
+                        label="結束條件"
+                      >
+                        <MenuItem value="date">結束日期</MenuItem>
+                        <MenuItem value="count">重複次數</MenuItem>
+                      </Select>
+                    </FormControl>
+                    
+                    {(editingEvent ? (editingEvent.repeat_until ? "date" : "count") : (newEvent.repeat_until ? "date" : "count")) === "date" ? (
+                      <TextField
+                        fullWidth
+                        label="結束日期"
+                        type="date"
+                        value={editingEvent ? editingEvent.repeat_until : newEvent.repeat_until}
+                        onChange={(e) => {
+                          if (editingEvent) {
+                            setEditingEvent({ ...editingEvent, repeat_until: e.target.value });
+                          } else {
+                            setNewEvent({ ...newEvent, repeat_until: e.target.value });
+                          }
+                        }}
+                        size="small"
+                        InputLabelProps={{ shrink: true }}
+                      />
+                    ) : (
+                      <TextField
+                        fullWidth
+                        label="重複次數"
+                        type="number"
+                        value={editingEvent ? editingEvent.repeat_count : newEvent.repeat_count}
+                        onChange={(e) => {
+                          if (editingEvent) {
+                            setEditingEvent({ ...editingEvent, repeat_count: e.target.value });
+                          } else {
+                            setNewEvent({ ...newEvent, repeat_count: e.target.value });
+                          }
+                        }}
+                        size="small"
+                        inputProps={{ min: 1, max: 100 }}
+                        helperText="包含原始事件"
+                      />
+                    )}
+                  </Box>
+                )}
+              </Box>
               
               {!(editingEvent ? editingEvent.is_all_day : newEvent.is_all_day) && (
                 <>
