@@ -82,10 +82,9 @@ export default function CalendarView() {
     // 處理 UTC 格式 (結尾有 Z)
     if (timeString.endsWith('Z')) {
       const utcDate = new Date(timeString);
-      // 強制轉換為本地時間 (UTC+8)
-      const localDate = new Date(utcDate.getTime() + (8 * 60 * 60 * 1000));
-      console.log(`UTC 轉本地: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
-      return localDate;
+      // 直接使用本地時間，不進行額外轉換
+      console.log(`UTC 直接解析: ${timeString} -> ${utcDate.toLocaleString('zh-TW')}`);
+      return utcDate;
     }
     
     // 處理本地格式 YYYY-MM-DD HH:mm:ss
@@ -128,9 +127,19 @@ export default function CalendarView() {
       // 修復：使用強制本地時間函數，避免時區轉換
       const formattedEvents = res.data.map(e => {
         console.log("處理事件:", e);
+        console.log("原始時間:", {
+          start: e.start_time,
+          end: e.end_time
+        });
+        
         // 使用強制本地時間函數
         const start = handleProductionTimezone(e.start_time);
         const end = handleProductionTimezone(e.end_time);
+        
+        console.log("轉換後時間:", {
+          start: start?.toLocaleString('zh-TW'),
+          end: end?.toLocaleString('zh-TW')
+        });
         
         const formattedEvent = {
           id: e.id,
@@ -322,6 +331,7 @@ export default function CalendarView() {
               minute: '2-digit',
               hour12: false
             }}
+            eventDisplay="block"
           />
         </Box>
 
