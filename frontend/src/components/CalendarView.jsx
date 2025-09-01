@@ -120,6 +120,16 @@ export default function CalendarView() {
         console.log(`UTC 轉本地: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
         return localDate;
       }
+      
+      // 如果不是 UTC 格式，但仍然是時間字符串，也進行處理
+      if (typeof timeString === 'string' && timeString.includes('-') && timeString.includes(':')) {
+        // 假設這是本地時間字符串，直接解析
+        const localDate = new Date(timeString);
+        if (!isNaN(localDate.getTime())) {
+          console.log(`本地時間解析: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
+          return localDate;
+        }
+      }
     }
     
     // 非生產環境或非 UTC 格式，使用原有邏輯
@@ -165,12 +175,12 @@ export default function CalendarView() {
       
       const res = await addEvent(eventData);
       
-      // 從後端返回的數據保持本地時間格式
+      // 從後端返回的數據使用時區處理函數
       const formattedEvent = {
         id: res.data.id,
         title: res.data.title,
-        start: res.data.start_time,
-        end: res.data.end_time
+        start: handleProductionTimezone(res.data.start_time),
+        end: handleProductionTimezone(res.data.end_time)
       };
       
       console.log("格式化後的事件:", formattedEvent);
@@ -228,14 +238,14 @@ export default function CalendarView() {
       
       const res = await updateEvent(editingEvent.id, eventData);
       
-      // 更新本地事件列表，保持本地時間格式
+      // 更新本地事件列表，使用時區處理函數
       setEvents(events.map(event => 
         event.id === editingEvent.id 
           ? {
               ...event,
               title: res.data.title,
-              start: res.data.start_time,
-              end: res.data.end_time
+              start: handleProductionTimezone(res.data.start_time),
+              end: handleProductionTimezone(res.data.end_time)
             }
           : event
       ));
