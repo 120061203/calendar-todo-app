@@ -40,98 +40,48 @@ export default function CalendarView() {
     loadEvents();
   }, []);
 
-  // 修復：時間解析工具函數，確保本地時間處理
+  // 修復時區問題：直接使用資料庫時間，不進行轉換
   const parseLocalTime = (timeString) => {
     if (!timeString) return null;
     
-    console.log('解析時間字符串:', timeString);
-    
-    // 方法1：直接解析為本地時間
-    const localDate = new Date(timeString);
-    
-    // 方法2：如果方法1失敗，手動解析
-    if (isNaN(localDate.getTime())) {
-      console.log('方法1失敗，嘗試手動解析');
-      
-      // 假設格式為 YYYY-MM-DD HH:mm:ss
-      const match = timeString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
-      if (match) {
-        const [, year, month, day, hour, minute, second] = match;
-        const manualDate = new Date(
-          parseInt(year),
-          parseInt(month) - 1, // 月份從0開始
-          parseInt(day),
-          parseInt(hour),
-          parseInt(minute),
-          parseInt(second)
-        );
-        
-        console.log('手動解析結果:', manualDate.toLocaleString('zh-TW'));
-        return manualDate;
-      }
-    }
-    
-    console.log('解析結果:', localDate.toLocaleString('zh-TW'));
-    return localDate;
-  };
-
-  // 修復：強制本地時間解析，避免時區轉換
-  const forceLocalTime = (timeString) => {
-    if (!timeString) return null;
-    
-    // 處理 UTC 格式 (結尾有 Z)
-    if (timeString.endsWith('Z')) {
-      const utcDate = new Date(timeString);
-      console.log(`UTC 格式解析: ${timeString} -> ${utcDate.toLocaleString('zh-TW')}`);
-      return utcDate;
-    }
-    
-    // 處理本地格式 YYYY-MM-DD HH:mm:ss
+    // 直接解析 YYYY-MM-DD HH:mm:ss 格式
     const match = timeString.match(/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/);
     if (match) {
       const [, year, month, day, hour, minute, second] = match;
       
-      // 創建本地時間對象，強制指定為本地時間
       const localDate = new Date();
       localDate.setFullYear(parseInt(year));
-      localDate.setMonth(parseInt(month) - 1); // 月份從0開始
+      localDate.setMonth(parseInt(month) - 1);
       localDate.setDate(parseInt(day));
       localDate.setHours(parseInt(hour));
       localDate.setMinutes(parseInt(minute));
       localDate.setSeconds(parseInt(second));
       localDate.setMilliseconds(0);
       
-      console.log(`強制本地時間: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
+      console.log(`解析本地時間: ${timeString} -> ${localDate.toLocaleString('zh-TW')}`);
       return localDate;
-    }
-    
-    // 嘗試直接解析其他格式
-    const fallbackDate = new Date(timeString);
-    if (!isNaN(fallbackDate.getTime())) {
-      console.log(`直接解析: ${timeString} -> ${fallbackDate.toLocaleString('zh-TW')}`);
-      return fallbackDate;
     }
     
     console.error('時間格式不匹配:', timeString);
     return null;
   };
 
-  // 統一時區處理：處理所有時間格式
+  // 修復：強制本地時間解析，避免時區轉換
+  // 統一時區處理：直接使用資料庫時間
   const handleProductionTimezone = (timeString) => {
     if (!timeString) return null;
-    // 直接使用 forceLocalTime，它已經能處理所有格式
-    return forceLocalTime(timeString);
+    return parseLocalTime(timeString);
   };
 
   const loadEvents = async () => {
     try {
       const res = await getEvents();
       
-      // 修復：使用強制本地時間函數，避免時區轉換
+      // 修復：直接使用資料庫時間，不進行時區轉換
       const formattedEvents = res.data.map(e => {
-        // 使用強制本地時間函數
-        const start = handleProductionTimezone(e.start_time);
-        const end = handleProductionTimezone(e.end_time);
+        // 直接解析本地時間格式
+        const start = parseLocalTime(e.start_time);
+        const end = parseLocalTime(e.end_time);
         
         return {
           id: e.id,
