@@ -129,6 +129,9 @@ export default function CalendarView() {
     const endDate = new Date(event.end_time);
     const repeatUntil = new Date(event.repeat_until);
     
+    // 確保結束日期包含當天
+    repeatUntil.setDate(repeatUntil.getDate() + 1);
+    
     let currentStart = new Date(startDate);
     let currentEnd = new Date(endDate);
     
@@ -153,13 +156,19 @@ export default function CalendarView() {
           break;
       }
       
-      if (currentStart <= repeatUntil) {
+      if (currentStart < repeatUntil) {
+        const eventId = event.original_event_id ? `${event.original_event_id}_${events.length}` : `${event.id}_${events.length}`;
+        
         events.push({
           ...event,
-          id: `${event.id}_${events.length}`,
-          start_time: currentStart.toISOString().split('T')[0] + (event.is_all_day ? '' : 'T' + currentStart.toTimeString().slice(0, 5)),
-          end_time: currentEnd.toISOString().split('T')[0] + (event.is_all_day ? '' : 'T' + currentEnd.toTimeString().slice(0, 5)),
-          original_event_id: event.id
+          id: eventId,
+          start_time: event.is_all_day 
+            ? currentStart.toISOString().split('T')[0]
+            : currentStart.toISOString().split('T')[0] + 'T' + currentStart.toTimeString().slice(0, 5),
+          end_time: event.is_all_day 
+            ? currentEnd.toISOString().split('T')[0]
+            : currentEnd.toISOString().split('T')[0] + 'T' + currentEnd.toTimeString().slice(0, 5),
+          original_event_id: event.original_event_id || event.id
         });
       }
     }
@@ -236,13 +245,37 @@ export default function CalendarView() {
     
     try {
       // 確保時間以本地時間格式發送，不進行時區轉換
+      // 處理重複次數轉換為結束日期
+      let repeatUntil = newEvent.repeat_until;
+      if (newEvent.repeat_type && newEvent.repeat_count && !newEvent.repeat_until) {
+        const startDate = new Date(newEvent.start_time);
+        const count = parseInt(newEvent.repeat_count);
+        
+        switch (newEvent.repeat_type) {
+          case 'daily':
+            startDate.setDate(startDate.getDate() + count - 1);
+            break;
+          case 'weekly':
+            startDate.setDate(startDate.getDate() + (count - 1) * 7);
+            break;
+          case 'monthly':
+            startDate.setMonth(startDate.getMonth() + count - 1);
+            break;
+          case 'yearly':
+            startDate.setFullYear(startDate.getFullYear() + count - 1);
+            break;
+        }
+        
+        repeatUntil = startDate.toISOString().split('T')[0];
+      }
+      
       const eventData = {
         title: newEvent.title,
         start_time: newEvent.start_time,
         end_time: newEvent.end_time,
         is_all_day: newEvent.is_all_day,
         repeat_type: newEvent.repeat_type || null,
-        repeat_until: newEvent.repeat_until || null,
+        repeat_until: repeatUntil || null,
         original_event_id: null
       };
       
@@ -324,13 +357,37 @@ export default function CalendarView() {
     
     try {
       // 確保時間以本地時間格式發送，不進行時區轉換
+      // 處理重複次數轉換為結束日期
+      let repeatUntil = editingEvent.repeat_until;
+      if (editingEvent.repeat_type && editingEvent.repeat_count && !editingEvent.repeat_until) {
+        const startDate = new Date(editingEvent.start_time);
+        const count = parseInt(editingEvent.repeat_count);
+        
+        switch (editingEvent.repeat_type) {
+          case 'daily':
+            startDate.setDate(startDate.getDate() + count - 1);
+            break;
+          case 'weekly':
+            startDate.setDate(startDate.getDate() + (count - 1) * 7);
+            break;
+          case 'monthly':
+            startDate.setMonth(startDate.getMonth() + count - 1);
+            break;
+          case 'yearly':
+            startDate.setFullYear(startDate.getFullYear() + count - 1);
+            break;
+        }
+        
+        repeatUntil = startDate.toISOString().split('T')[0];
+      }
+      
       const eventData = {
         title: editingEvent.title,
         start_time: editingEvent.start_time,
         end_time: editingEvent.end_time,
         is_all_day: editingEvent.is_all_day,
         repeat_type: editingEvent.repeat_type || null,
-        repeat_until: editingEvent.repeat_until || null,
+        repeat_until: repeatUntil || null,
         original_event_id: editingEvent.original_event_id || null
       };
       
@@ -508,7 +565,7 @@ export default function CalendarView() {
               />
               
               {/* 重複事件設定 */}
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 2, p: 2, bgcolor: "grey.50", borderRadius: 1 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2, p: 2, bgcolor: "grey.50", borderRadius: 1, minHeight: "120px" }}>
                 <Typography variant="subtitle2" color="text.secondary">
                   重複設定
                 </Typography>
@@ -519,9 +576,19 @@ export default function CalendarView() {
                     value={editingEvent ? editingEvent.repeat_type : newEvent.repeat_type}
                     onChange={(e) => {
                       if (editingEvent) {
-                        setEditingEvent({ ...editingEvent, repeat_type: e.target.value });
+                        setEditingEvent({ 
+                          ...editingEvent, 
+                          repeat_type: e.target.value,
+                          repeat_until: "",
+                          repeat_count: ""
+                        });
                       } else {
-                        setNewEvent({ ...newEvent, repeat_type: e.target.value });
+                        setNewEvent({ 
+                          ...newEvent, 
+                          repeat_type: e.target.value,
+                          repeat_until: "",
+                          repeat_count: ""
+                        });
                       }
                     }}
                     label="重複類型"
@@ -535,23 +602,44 @@ export default function CalendarView() {
                 </FormControl>
                 
                 {(editingEvent ? editingEvent.repeat_type : newEvent.repeat_type) && (
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                  <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     <FormControl fullWidth size="small">
                       <InputLabel>結束條件</InputLabel>
                       <Select
-                        value={editingEvent ? (editingEvent.repeat_until ? "date" : "count") : (newEvent.repeat_until ? "date" : "count")}
+                        value={(() => {
+                          const currentEvent = editingEvent || newEvent;
+                          if (currentEvent.repeat_until) return "date";
+                          if (currentEvent.repeat_count) return "count";
+                          return "date"; // 預設為日期
+                        })()}
                         onChange={(e) => {
                           if (e.target.value === "date") {
                             if (editingEvent) {
-                              setEditingEvent({ ...editingEvent, repeat_until: "", repeat_count: "" });
+                              setEditingEvent({ 
+                                ...editingEvent, 
+                                repeat_until: new Date().toISOString().split('T')[0],
+                                repeat_count: ""
+                              });
                             } else {
-                              setNewEvent({ ...newEvent, repeat_until: "", repeat_count: "" });
+                              setNewEvent({ 
+                                ...newEvent, 
+                                repeat_until: new Date().toISOString().split('T')[0],
+                                repeat_count: ""
+                              });
                             }
                           } else {
                             if (editingEvent) {
-                              setEditingEvent({ ...editingEvent, repeat_until: "", repeat_count: "5" });
+                              setEditingEvent({ 
+                                ...editingEvent, 
+                                repeat_until: "",
+                                repeat_count: "5"
+                              });
                             } else {
-                              setNewEvent({ ...newEvent, repeat_until: "", repeat_count: "5" });
+                              setNewEvent({ 
+                                ...newEvent, 
+                                repeat_until: "",
+                                repeat_count: "5"
+                              });
                             }
                           }
                         }}
@@ -562,40 +650,49 @@ export default function CalendarView() {
                       </Select>
                     </FormControl>
                     
-                    {(editingEvent ? (editingEvent.repeat_until ? "date" : "count") : (newEvent.repeat_until ? "date" : "count")) === "date" ? (
-                      <TextField
-                        fullWidth
-                        label="結束日期"
-                        type="date"
-                        value={editingEvent ? editingEvent.repeat_until : newEvent.repeat_until}
-                        onChange={(e) => {
-                          if (editingEvent) {
-                            setEditingEvent({ ...editingEvent, repeat_until: e.target.value });
-                          } else {
-                            setNewEvent({ ...newEvent, repeat_until: e.target.value });
-                          }
-                        }}
-                        size="small"
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    ) : (
-                      <TextField
-                        fullWidth
-                        label="重複次數"
-                        type="number"
-                        value={editingEvent ? editingEvent.repeat_count : newEvent.repeat_count}
-                        onChange={(e) => {
-                          if (editingEvent) {
-                            setEditingEvent({ ...editingEvent, repeat_count: e.target.value });
-                          } else {
-                            setNewEvent({ ...newEvent, repeat_count: e.target.value });
-                          }
-                        }}
-                        size="small"
-                        inputProps={{ min: 1, max: 100 }}
-                        helperText="包含原始事件"
-                      />
-                    )}
+                    {(() => {
+                      const currentEvent = editingEvent || newEvent;
+                      const endCondition = currentEvent.repeat_until ? "date" : "count";
+                      
+                      if (endCondition === "date") {
+                        return (
+                          <TextField
+                            fullWidth
+                            label="結束日期"
+                            type="date"
+                            value={currentEvent.repeat_until || ""}
+                            onChange={(e) => {
+                              if (editingEvent) {
+                                setEditingEvent({ ...editingEvent, repeat_until: e.target.value });
+                              } else {
+                                setNewEvent({ ...newEvent, repeat_until: e.target.value });
+                              }
+                            }}
+                            size="small"
+                            InputLabelProps={{ shrink: true }}
+                          />
+                        );
+                      } else {
+                        return (
+                          <TextField
+                            fullWidth
+                            label="重複次數"
+                            type="number"
+                            value={currentEvent.repeat_count || ""}
+                            onChange={(e) => {
+                              if (editingEvent) {
+                                setEditingEvent({ ...editingEvent, repeat_count: e.target.value });
+                              } else {
+                                setNewEvent({ ...newEvent, repeat_count: e.target.value });
+                              }
+                            }}
+                            size="small"
+                            inputProps={{ min: 1, max: 100 }}
+                            helperText="包含原始事件"
+                          />
+                        );
+                      }
+                    })()}
                   </Box>
                 )}
               </Box>
