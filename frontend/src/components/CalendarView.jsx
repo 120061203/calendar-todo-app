@@ -220,6 +220,8 @@ export default function CalendarView() {
           }
         };
         
+        console.log(`載入事件: ${baseEvent.title}, 開始: ${baseEvent.start.toLocaleString()}, 結束: ${baseEvent.end.toLocaleString()}`);
+        
         // 如果是重複事件，生成所有重複實例
         if (e.repeat_type && e.repeat_until) {
           const repeatingEvents = generateRepeatingEvents({
@@ -232,6 +234,8 @@ export default function CalendarView() {
             const isAllDayRepeating = repeatingEvent.is_all_day || false;
             const startRepeating = isAllDayRepeating ? new Date(repeatingEvent.start_time) : parseLocalTime(repeatingEvent.start_time);
             const endRepeating = isAllDayRepeating ? new Date(repeatingEvent.end_time) : parseLocalTime(repeatingEvent.end_time);
+            
+            console.log(`生成重複事件: ${repeatingEvent.title}, 開始: ${startRepeating.toLocaleString()}, 結束: ${endRepeating.toLocaleString()}`);
             
             allEvents.push({
               id: repeatingEvent.id,
