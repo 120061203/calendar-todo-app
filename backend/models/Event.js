@@ -82,6 +82,18 @@ class Event {
       original_event_id: this.original_event_id
     };
   }
+
+  static getValidationRules() {
+    return [
+      body('title').notEmpty().withMessage('Title is required'),
+      body('start_time').notEmpty().withMessage('Start time is required'),
+      body('end_time').notEmpty().withMessage('End time is required'),
+      body('is_all_day').optional().isBoolean().withMessage('is_all_day must be boolean'),
+      body('repeat_type').optional().isIn(['daily', 'weekly', 'monthly', 'yearly']).withMessage('Invalid repeat type'),
+      body('repeat_until').optional().isDate().withMessage('repeat_until must be a valid date'),
+      body('original_event_id').optional().isInt().withMessage('original_event_id must be an integer')
+    ];
+  }
 }
 
 module.exports = Event;
