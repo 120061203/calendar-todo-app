@@ -10,9 +10,9 @@ class Event {
     this.created_at = data.created_at;
     this.updated_at = data.updated_at;
     this.is_all_day = data.is_all_day || false;
-    this.repeat_type = data.repeat_type || null;
-    this.repeat_until = data.repeat_until || null;
-    this.original_event_id = data.original_event_id || null;
+    this.repeat_type = data.repeat_type !== undefined ? data.repeat_type : null;
+    this.repeat_until = data.repeat_until !== undefined ? data.repeat_until : null;
+    this.original_event_id = data.original_event_id !== undefined ? data.original_event_id : null;
   }
 
   static create(data) {

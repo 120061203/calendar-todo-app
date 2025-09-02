@@ -93,9 +93,9 @@ class EventRepository {
         eventData.start_time, 
         eventData.end_time,
         eventData.is_all_day || false,
-        eventData.repeat_type || null,
-        eventData.repeat_until || null,
-        eventData.original_event_id || null
+        eventData.repeat_type !== undefined ? eventData.repeat_type : null,
+        eventData.repeat_until !== undefined ? eventData.repeat_until : null,
+        eventData.original_event_id !== undefined ? eventData.original_event_id : null
       ];
       
       logger.info('SQL query values:', values);
