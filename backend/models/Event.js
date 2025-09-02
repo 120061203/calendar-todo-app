@@ -89,9 +89,18 @@ class Event {
       body('start_time').notEmpty().withMessage('Start time is required'),
       body('end_time').notEmpty().withMessage('End time is required'),
       body('is_all_day').optional().isBoolean().withMessage('is_all_day must be boolean'),
-      body('repeat_type').optional().isIn(['daily', 'weekly', 'monthly', 'yearly']).withMessage('Invalid repeat type'),
-      body('repeat_until').optional().isDate().withMessage('repeat_until must be a valid date'),
-      body('original_event_id').optional().isInt().withMessage('original_event_id must be an integer')
+      body('repeat_type').optional().custom((value) => {
+        if (value === null || value === undefined || value === '') return true;
+        return ['daily', 'weekly', 'monthly', 'yearly'].includes(value);
+      }).withMessage('Invalid repeat type'),
+      body('repeat_until').optional().custom((value) => {
+        if (value === null || value === undefined || value === '') return true;
+        return !isNaN(Date.parse(value));
+      }).withMessage('repeat_until must be a valid date'),
+      body('original_event_id').optional().custom((value) => {
+        if (value === null || value === undefined || value === '') return true;
+        return Number.isInteger(Number(value));
+      }).withMessage('original_event_id must be an integer')
     ];
   }
 }
