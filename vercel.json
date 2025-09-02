@@ -13,5 +13,6 @@
     { "src": "/api/(.*)", "dest": "backend/index.js" },
     { "src": "/(.*)", "dest": "backend/index.js" }
   ],
-  "installCommand": "cd backend && npm install"
+  "buildCommand": "npm run build",
+  "installCommand": "npm install"
 }
