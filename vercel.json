@@ -12,7 +12,5 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "backend/index.js" },
     { "src": "/(.*)", "dest": "backend/index.js" }
-  ],
-  "buildCommand": "npm run build",
-  "installCommand": "npm install"
+  ]
 }
