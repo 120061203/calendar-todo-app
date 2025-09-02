@@ -200,7 +200,16 @@ export default function CalendarView() {
       // 修復：直接使用資料庫時間，不進行時區轉換
       let allEvents = [];
       
+      console.log("🔍 從後端獲取的所有事件數據:", res.data);
+      
       res.data.forEach(e => {
+        console.log(`🔍 處理事件: ${e.title}`, {
+          repeat_type: e.repeat_type,
+          repeat_until: e.repeat_until,
+          typeof_repeat_type: typeof e.repeat_type,
+          typeof_repeat_until: typeof e.repeat_until
+        });
+        
         const isAllDay = e.is_all_day || false;
         
         // 整天事件和普通事件使用不同的解析方式
