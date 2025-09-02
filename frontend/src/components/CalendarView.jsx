@@ -336,8 +336,8 @@ export default function CalendarView() {
         start_time: newEvent.start_time,
         end_time: newEvent.end_time,
         is_all_day: newEvent.is_all_day,
-        repeat_type: newEvent.repeat_type || null,
-        repeat_until: repeatUntil || null,
+        repeat_type: newEvent.repeat_type !== undefined && newEvent.repeat_type !== "" ? newEvent.repeat_type : null,
+        repeat_until: repeatUntil !== undefined && repeatUntil !== "" ? repeatUntil : null,
         original_event_id: null
       };
       
@@ -469,9 +469,9 @@ export default function CalendarView() {
         start_time: editingEvent.start_time,
         end_time: editingEvent.end_time,
         is_all_day: editingEvent.is_all_day,
-        repeat_type: editingEvent.repeat_type || null,
-        repeat_until: repeatUntil || null,
-        original_event_id: editingEvent.original_event_id || null
+        repeat_type: editingEvent.repeat_type !== undefined && editingEvent.repeat_type !== "" ? editingEvent.repeat_type : null,
+        repeat_until: repeatUntil !== undefined && repeatUntil !== "" ? repeatUntil : null,
+        original_event_id: editingEvent.original_event_id !== undefined && editingEvent.original_event_id !== "" ? editingEvent.original_event_id : null
       };
       
       console.log("更新事件數據:", eventData);
