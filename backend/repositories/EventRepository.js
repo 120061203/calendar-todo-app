@@ -76,7 +76,17 @@ class EventRepository {
       const query = `
         INSERT INTO calendar_events (title, start_time, end_time, is_all_day, repeat_type, repeat_until, original_event_id) 
         VALUES ($1, $2, $3, $4, $5, $6, $7) 
-        RETURNING *
+        RETURNING 
+          id,
+          title,
+          to_char(start_time, 'YYYY-MM-DD HH24:MI:SS') as start_time,
+          to_char(end_time, 'YYYY-MM-DD HH24:MI:SS') as end_time,
+          to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
+          to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at,
+          is_all_day,
+          repeat_type,
+          to_char(repeat_until, 'YYYY-MM-DD') as repeat_until,
+          original_event_id
       `;
       const values = [
         eventData.title, 
@@ -118,7 +128,17 @@ class EventRepository {
         SET title = $1, start_time = $2, end_time = $3, is_all_day = $4, 
             repeat_type = $5, repeat_until = $6, original_event_id = $7, updated_at = NOW()
         WHERE id = $8 
-        RETURNING *
+        RETURNING 
+          id,
+          title,
+          to_char(start_time, 'YYYY-MM-DD HH24:MI:SS') as start_time,
+          to_char(end_time, 'YYYY-MM-DD HH24:MI:SS') as end_time,
+          to_char(created_at, 'YYYY-MM-DD HH24:MI:SS') as created_at,
+          to_char(updated_at, 'YYYY-MM-DD HH24:MI:SS') as updated_at,
+          is_all_day,
+          repeat_type,
+          to_char(repeat_until, 'YYYY-MM-DD') as repeat_until,
+          original_event_id
       `;
       const values = [
         event.title, 
