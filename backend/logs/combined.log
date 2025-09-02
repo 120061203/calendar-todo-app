@@ -880,3 +880,51 @@ Error: Failed to update event
 2025-09-02 14:26:34 [INFO]: Event created successfully: {"id":17,"title":"本地測試","start_time":"2025-09-02 20:00:00","end_time":"2025-09-02 21:00:00","created_at":"2025-09-02 14:26:34","updated_at":"2025-09-02 14:26:34","is_all_day":false,"repeat_type":"weekly","repeat_until":"2025-09-16","original_event_id":null}
 2025-09-02 14:26:34 [INFO]: Successfully created event with id: 17
 2025-09-02 14:26:34 [INFO]: EventController.createEvent result: {"id":17,"title":"本地測試","repeat_type":"weekly","repeat_until":"2025-09-16"}
+2025-09-02 14:40:16 [INFO]: Fetching all todos
+2025-09-02 14:40:16 [INFO]: Fetching all events
+2025-09-02 14:40:16 [INFO]: Successfully fetched 5 todos
+2025-09-02 14:40:16 [INFO]: Fetching all todos
+2025-09-02 14:40:16 [INFO]: Successfully fetched 5 todos
+2025-09-02 14:40:16 [INFO]: Successfully fetched 10 events
+2025-09-02 14:40:16 [INFO]: Fetching all events
+2025-09-02 14:40:16 [INFO]: Successfully fetched 10 events
+2025-09-02 14:40:49 [INFO]: EventController.createEvent received data: {"title":"測試重複","start_time":"2025-09-02T14:40","end_time":"2025-09-02T16:40","is_all_day":false,"repeat_type":"weekly","repeat_until":"2025-09-16","original_event_id":null}
+2025-09-02 14:40:49 [INFO]: Creating new event: {"title":"測試重複"}
+2025-09-02 14:40:49 [INFO]: Creating event with data: {"title":"測試重複","start_time":"2025-09-02T14:40","end_time":"2025-09-02T16:40","is_all_day":false,"repeat_type":"weekly","repeat_until":"2025-09-16","original_event_id":null}
+2025-09-02 14:40:49 [INFO]: SQL query values: {"0":"測試重複","1":"2025-09-02T14:40","2":"2025-09-02T16:40","3":false,"4":"weekly","5":"2025-09-16","6":null}
+2025-09-02 14:40:49 [INFO]: Event created successfully: {"id":18,"title":"測試重複","start_time":"2025-09-02 14:40:00","end_time":"2025-09-02 16:40:00","created_at":"2025-09-02 14:40:49","updated_at":"2025-09-02 14:40:49","is_all_day":false,"repeat_type":"weekly","repeat_until":"2025-09-16","original_event_id":null}
+2025-09-02 14:40:49 [INFO]: Successfully created event with id: 18
+2025-09-02 14:40:49 [INFO]: EventController.createEvent result: {"id":18,"title":"測試重複","repeat_type":"weekly","repeat_until":"2025-09-16"}
+2025-09-02 14:40:49 [INFO]: Fetching all events
+2025-09-02 14:40:49 [INFO]: Successfully fetched 11 events
+2025-09-02 14:41:03 [INFO]: Fetching all todos
+2025-09-02 14:41:03 [INFO]: Successfully fetched 5 todos
+2025-09-02 14:41:07 [INFO]: Fetching all events
+2025-09-02 14:41:07 [INFO]: Successfully fetched 11 events
+2025-09-02 14:42:05 [INFO]: EventController.createEvent received data: {"title":"test repeat","start_time":"2025-09-12T14:41","end_time":"2025-09-12T15:41","is_all_day":false,"repeat_type":"daily","repeat_until":"2025-09-16","original_event_id":null}
+2025-09-02 14:42:05 [INFO]: Creating new event: {"title":"test repeat"}
+2025-09-02 14:42:05 [INFO]: Creating event with data: {"title":"test repeat","start_time":"2025-09-12T14:41","end_time":"2025-09-12T15:41","is_all_day":false,"repeat_type":"daily","repeat_until":"2025-09-16","original_event_id":null}
+2025-09-02 14:42:05 [INFO]: SQL query values: {"0":"test repeat","1":"2025-09-12T14:41","2":"2025-09-12T15:41","3":false,"4":"daily","5":"2025-09-16","6":null}
+2025-09-02 14:42:05 [INFO]: Event created successfully: {"id":19,"title":"test repeat","start_time":"2025-09-12 14:41:00","end_time":"2025-09-12 15:41:00","created_at":"2025-09-02 14:42:05","updated_at":"2025-09-02 14:42:05","is_all_day":false,"repeat_type":"daily","repeat_until":"2025-09-16","original_event_id":null}
+2025-09-02 14:42:05 [INFO]: Successfully created event with id: 19
+2025-09-02 14:42:05 [INFO]: EventController.createEvent result: {"id":19,"title":"test repeat","repeat_type":"daily","repeat_until":"2025-09-16"}
+2025-09-02 14:42:05 [INFO]: Fetching all events
+2025-09-02 14:42:05 [INFO]: Successfully fetched 12 events
+2025-09-02 14:42:12 [INFO]: Deleting event with id: 19_1
+2025-09-02 14:42:12 [WARN]: Event with id 19_1 not found for deletion
+2025-09-02 14:42:21 [INFO]: Deleting event with id: 19_1
+2025-09-02 14:42:21 [WARN]: Event with id 19_1 not found for deletion
+2025-09-02 14:42:31 [INFO]: Updating event with id: 19_2 {"title":"test repeat","start_time":"2025-09-14T14:41","end_time":"2025-09-14T16:41","is_all_day":false,"repeat_type":"daily","repeat_until":"2025-09-16","original_event_id":19}
+2025-09-02 14:42:31 [WARN]: Event with id 19_2 not found for update
+2025-09-02 14:42:38 [INFO]: Updating event with id: 19_2 {"title":"test repeat","start_time":"2025-09-14T14:41","end_time":"2025-09-14T16:41","is_all_day":false,"repeat_type":"daily","repeat_until":"2025-09-16","original_event_id":19}
+2025-09-02 14:42:38 [WARN]: Event with id 19_2 not found for update
+2025-09-02 14:42:56 [INFO]: Updating event with id: 19_2 {"title":"test repeat","start_time":"2025-09-14T14:41","end_time":"2025-09-14T16:41","is_all_day":false,"repeat_type":"daily","repeat_until":"2025-09-16","original_event_id":19}
+2025-09-02 14:42:56 [WARN]: Event with id 19_2 not found for update
+2025-09-02 14:45:13 [INFO]: Fetching all todos
+2025-09-02 14:45:13 [INFO]: Fetching all events
+2025-09-02 14:45:13 [INFO]: Successfully fetched 5 todos
+2025-09-02 14:45:13 [INFO]: Fetching all todos
+2025-09-02 14:45:13 [INFO]: Successfully fetched 5 todos
+2025-09-02 14:45:13 [INFO]: Successfully fetched 12 events
+2025-09-02 14:45:13 [INFO]: Fetching all events
+2025-09-02 14:45:13 [INFO]: Successfully fetched 12 events
