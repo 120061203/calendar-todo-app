@@ -347,7 +347,12 @@ export default function CalendarView() {
           original_repeat_type: newEvent.repeat_type,
           original_repeat_count: newEvent.repeat_count,
           original_repeat_until: newEvent.repeat_until,
-          calculated_repeat_until: repeatUntil
+          calculated_repeat_until: repeatUntil,
+          typeof_repeat_type: typeof newEvent.repeat_type,
+          repeat_type_length: newEvent.repeat_type?.length,
+          is_empty_string: newEvent.repeat_type === "",
+          final_repeat_type: eventData.repeat_type,
+          final_repeat_until: eventData.repeat_until
         }
       });
       
