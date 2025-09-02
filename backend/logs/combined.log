@@ -873,3 +873,10 @@ Error: Failed to update event
     at async EventController.updateEvent (/Users/songlin.chen/Documents/calendar-todo-app/backend/controllers/EventController.js:79:21)
 2025-09-01 10:54:58 [INFO]: Updating event with id: 2 {"title":"測試更新"}
 2025-09-01 10:54:58 [INFO]: Successfully updated event with id: 2
+2025-09-02 14:26:34 [INFO]: EventController.createEvent received data: {"title":"本地測試","start_time":"2025-09-02T20:00:00","end_time":"2025-09-02T21:00:00","is_all_day":false,"repeat_type":"weekly","repeat_until":"2025-09-16","original_event_id":null}
+2025-09-02 14:26:34 [INFO]: Creating new event: {"title":"本地測試"}
+2025-09-02 14:26:34 [INFO]: Creating event with data: {"title":"本地測試","start_time":"2025-09-02T20:00:00","end_time":"2025-09-02T21:00:00","is_all_day":false,"repeat_type":"weekly","repeat_until":"2025-09-16","original_event_id":null}
+2025-09-02 14:26:34 [INFO]: SQL query values: {"0":"本地測試","1":"2025-09-02T20:00:00","2":"2025-09-02T21:00:00","3":false,"4":"weekly","5":"2025-09-16","6":null}
+2025-09-02 14:26:34 [INFO]: Event created successfully: {"id":17,"title":"本地測試","start_time":"2025-09-02 20:00:00","end_time":"2025-09-02 21:00:00","created_at":"2025-09-02 14:26:34","updated_at":"2025-09-02 14:26:34","is_all_day":false,"repeat_type":"weekly","repeat_until":"2025-09-16","original_event_id":null}
+2025-09-02 14:26:34 [INFO]: Successfully created event with id: 17
+2025-09-02 14:26:34 [INFO]: EventController.createEvent result: {"id":17,"title":"本地測試","repeat_type":"weekly","repeat_until":"2025-09-16"}

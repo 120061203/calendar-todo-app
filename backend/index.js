@@ -82,7 +82,7 @@ app.use((error, req, res, next) => {
 
 // 啟動服務器
 const server = app.listen(process.env.PORT || 3000, () => {
-  console.log(`🚀 Backend running on http://localhost:${process.env.PORT || 3000}`);
+  console.log(`🚀 Backend running on http://localhost:${process.env.PORT || 3000} (v2.1-repeat-events-fixed)`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
